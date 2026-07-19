@@ -10,7 +10,7 @@ export const signupSchema = z.object({
     .string()
     .min(2, "Last name must be at least 2 characters")
     .trim(),
-
+  
   email: z
     .email("Invalid email address")
     .transform((email) => email.toLowerCase().trim()),
