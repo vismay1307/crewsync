@@ -5,7 +5,7 @@ name:string,
 description?:string,
 owner:Types.ObjectId,
 logo?:string,
-slug:string,
+
 visibility:"private"|"public",
 isDeleted:boolean,
 deletedAt:Date
@@ -32,13 +32,7 @@ const workspaceSchema = new Schema<IWorkSpace>(
     logo: {
       type: String,
     },
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-    },
+    
     visibility: {
       type: String,
       enum: ["private", "public"],

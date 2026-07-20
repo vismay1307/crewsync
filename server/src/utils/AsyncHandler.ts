@@ -6,10 +6,18 @@ type AsyncController = (
   next: NextFunction
 ) => Promise<void>;
 
-const AsyncHandler =
+const asyncHandler =
   (controller: AsyncController) =>
-  (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(controller(req, res, next)).catch(next);
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      await controller(req, res, next);
+    } catch (error) {
+      next(error);
+    }
   };
 
-export default AsyncHandler;
+export default asyncHandler;

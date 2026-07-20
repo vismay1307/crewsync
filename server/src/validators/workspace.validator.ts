@@ -24,3 +24,5 @@ export const createWorkspaceSchema = z.object({
       .optional(),
   }),
 });
+export type CreateWorkspaceInput =
+  z.infer<typeof createWorkspaceSchema>["body"];
