@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import  asyncHandler  from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import { createWorkspace } from "../services/workspace.service.js";
+import { createWorkspace,getWorkspaces } from "../services/workspace.service.js";
 
 export const createWorkspaceController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -16,6 +16,23 @@ export const createWorkspaceController = asyncHandler(
     "Workspace created successfully",
     workspace
 )
+    );
+  }
+);
+
+export const getWorkspacesController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const ownerId = req.user._id;
+
+    const workspaces = await getWorkspaces(ownerId);
+
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        "Workspaces fetched successfully",
+        workspaces,
+        
+      )
     );
   }
 );

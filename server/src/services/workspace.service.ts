@@ -15,7 +15,7 @@ export const createWorkspace = async (
 
   if (existingWorkspace) {
     throw new ApiError(409, "Workspace with this name already exists.");
-  }
+  } 
 
   const workspace = await Workspace.create({
     name: data.name,
@@ -25,4 +25,17 @@ export const createWorkspace = async (
   });
 
   return workspace;
+};
+
+export const getWorkspaces = async (
+  ownerId: Types.ObjectId
+) => {
+  const workspaces = await Workspace.find({
+    owner: ownerId,
+    isDeleted: false,
+  }).sort({
+    createdAt: -1,
+  });
+
+  return workspaces;
 };
