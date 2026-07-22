@@ -38,3 +38,14 @@ export const createProjectSchema = z.object({
 
 export type CreateProjectInput =
     z.infer<typeof createProjectSchema>["body"];
+
+    export const getProjectsSchema = z.object({
+  params: z.object({
+    workspaceId: z
+      .string()
+      .regex(
+        /^[a-f\d]{24}$/i,
+        "Invalid workspace id"
+      ),
+  }),
+});
