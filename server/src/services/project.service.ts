@@ -66,3 +66,29 @@ export const getProjects = async (
 
   return projects;
 };
+
+export const getProjectById = async (
+  projectId: Types.ObjectId,
+  ownerId: Types.ObjectId
+) => {
+
+  const project = await Project.findOne({
+    _id: projectId,
+    owner: ownerId,
+    isDeleted: false,
+  })
+    .populate("workspace", "name emoji")
+    .populate(
+      "owner",
+      "firstName lastName email avatar"
+    );
+
+  if (!project) {
+    throw new ApiError(
+      404,
+      "Project not found"
+    );
+  }
+
+  return project;
+};

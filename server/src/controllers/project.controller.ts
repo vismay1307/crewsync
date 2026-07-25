@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 
 import  asyncHandler  from "../utils/asyncHandler.js";
 import  ApiResponse  from "../utils/ApiResponse.js";
-import { createProject,getProjects } from "../services/project.service.js";
+import { createProject,getProjects,getProjectById } from "../services/project.service.js";
 
 export const createProjectController = asyncHandler(
     async (req: Request, res: Response) => {
@@ -51,3 +51,38 @@ export const getProjectsController = asyncHandler(
     );
   }
 );
+
+export const getProjectController =
+asyncHandler(
+
+async (req: Request, res: Response) => {
+
+const ownerId = req.user!._id;
+
+const projectId =
+req.params.projectId as string;
+
+const project =
+await getProjectById(
+
+new Types.ObjectId(projectId),
+
+ownerId
+
+);
+
+res.status(200).json(
+
+new ApiResponse(
+
+200,
+
+"Project fetched successfully",
+
+project
+
+)
+
+);
+
+});
