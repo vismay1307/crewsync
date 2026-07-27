@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
-
+import taskRoutes from "./task.routes.js";
 import {
   createProjectSchema,
   getProjectsSchema,
@@ -51,5 +51,10 @@ router.delete(
   verifyJWT,
   validate(getProjectSchema),
   deleteProjectController
+);
+
+router.use(
+  "/:projectId/tasks",
+  taskRoutes
 );
 export default router;
