@@ -6,13 +6,13 @@ import { validate } from "../middlewares/validate.middleware.js";
 import {
   createProjectSchema,
   getProjectsSchema,
-  getProjectSchema
+  getProjectSchema,updateProjectSchema
 } from "../validators/project.validators.js";
 
 import {
   createProjectController,
   getProjectsController,
-  getProjectController
+  getProjectController,updateProjectController,deleteProjectController
 } from "../controllers/project.controller.js";
 
 const router = Router({
@@ -39,4 +39,17 @@ router.get(
   getProjectController
 );
 
+router.patch(
+  "/:projectId",
+  verifyJWT,
+  validate(updateProjectSchema),
+  updateProjectController
+);
+
+router.delete(
+  "/:projectId",
+  verifyJWT,
+  validate(getProjectSchema),
+  deleteProjectController
+);
 export default router;

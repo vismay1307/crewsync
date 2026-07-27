@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import env from "../config/env.js";
 import User from "../models/user.models.js";
 import ApiError from "../utils/ApiError.js";
-import  asyncHandler from "../utils/asyncHandler.js";
+import  asyncHandler from "../utils/AsyncHandler.js";
 
 interface JwtPayload {
   userId: string;

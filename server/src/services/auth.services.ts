@@ -1,7 +1,7 @@
 import User, { IUser } from "../models/user.models.js";
 import ApiError from "../utils/ApiError.js";
-import { SignupData } from "../validators/auth.validator.js";
-import { LoginData } from "../validators/auth.validator.js";
+import { SignupData,LoginData} from "../validators/auth.validator.js";
+
 import jwt from "jsonwebtoken";
 import env from "../config/env.js";
 interface JwtPayload {
