@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 import { Task } from "../models/task.model.js";
 import { Project } from "../models/project.models.js";
 import User from "../models/user.models.js";
-
+import { WorkspaceMember } from "../models/workspace-member.model.js";
 import ApiError from "../utils/ApiError.js";
 
 import {
@@ -27,12 +27,19 @@ export const createTask = async (
   }
 
   if (data.assignee) {
-    const assignee = await User.findById(data.assignee);
+  const member = await WorkspaceMember.findOne({
+    workspace: project.workspace,
+    user: data.assignee,
+    isDeleted: false,
+  });
 
-    if (!assignee) {
-      throw new ApiError(404, "Assignee not found");
-    }
+  if (!member) {
+    throw new ApiError(
+      404,
+      "Assignee is not a member of this workspace."
+    );
   }
+}
 
   const completedAt =
     data.status === "done"
@@ -147,18 +154,20 @@ export const updateTask = async (
     );
   }
 
-  if (data.assignee) {
-    const assignee = await User.findById(
-      data.assignee
-    );
+ if (data.assignee) {
+  const member = await WorkspaceMember.findOne({
+    workspace: project.workspace,
+    user: data.assignee,
+    isDeleted: false,
+  });
 
-    if (!assignee) {
-      throw new ApiError(
-        404,
-        "Assignee not found"
-      );
-    }
+  if (!member) {
+    throw new ApiError(
+      404,
+      "Assignee is not a member of this workspace."
+    );
   }
+}
 
   Object.assign(task, data);
 

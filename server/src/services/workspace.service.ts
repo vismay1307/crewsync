@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { Workspace } from "../models/workspace.model.js";
 import {UpdateWorkspaceInput, CreateWorkspaceInput,getWorkspaceSchema } from "../validators/workspace.validator.js";
+import { WorkspaceMember } from "../models/workspace-member.model.js";
 import  ApiError  from "../utils/ApiError.js";
 
 export const createWorkspace = async (
@@ -18,13 +19,21 @@ export const createWorkspace = async (
   } 
 
   const workspace = await Workspace.create({
-    name: data.name,
-    description: data.description,
-    visibility: data.visibility,
-    owner: ownerId,
-  });
+  name: data.name,
+  description: data.description,
+  visibility: data.visibility,
+  owner: ownerId,
+});
 
-  return workspace;
+await WorkspaceMember.create({
+  workspace: workspace._id,
+  user: ownerId,
+  role: "owner",
+  status: "accepted",
+  invitedBy: ownerId,
+});
+
+return workspace;
 };
 
 export const getWorkspaces = async (

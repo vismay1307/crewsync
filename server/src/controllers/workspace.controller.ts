@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import  asyncHandler  from "../utils/asyncHandler.js";
+import  asyncHandler  from "../utils/AsyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import {updateWorkspace, createWorkspace,getWorkspaces,getWorkspaceById } from "../services/workspace.service.js";
 import { Types } from "mongoose";

@@ -4,6 +4,9 @@ import { validate } from "../middlewares/validate.middleware.js";
 import {updateWorkspaceSchema, createWorkspaceSchema,getWorkspaceSchema } from "../validators/workspace.validator.js";
 import {updateWorkspaceController, createWorkspaceController,getWorkspacesController,getWorkspaceController, deleteWorkspaceController } from "../controllers/workspace.controller.js";
 import projectRoutes from "./project.routes.js";
+import workspaceMemberRoutes from "./workspace-member.routes.js";
+
+
 const router = Router();
 
 router.post(
@@ -41,6 +44,9 @@ router.use(
     "/:workspaceId/projects",
     projectRoutes
 );
-
+router.use(
+  "/:workspaceId/members",
+  workspaceMemberRoutes
+);
 
 export default router;

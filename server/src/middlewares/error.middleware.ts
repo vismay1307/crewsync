@@ -8,6 +8,10 @@ const errorHandler = (
   next: NextFunction
 ): void => {
 
+  console.error("========== ERROR ==========");
+  console.error(err);
+  console.error("===========================");
+
   if (err instanceof ApiError) {
     res.status(err.statusCode).json({
       success: err.success,
@@ -20,9 +24,8 @@ const errorHandler = (
 
   res.status(500).json({
     success: false,
-    message: "Internal Server Error",
+    message: err.message,   // temporary
     errors: [],
   });
 };
-
 export default errorHandler;
