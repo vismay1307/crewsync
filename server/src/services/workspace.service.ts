@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { Workspace } from "../models/workspace.model.js";
-import {UpdateWorkspaceInput, CreateWorkspaceInput,getWorkspaceSchema } from "../validators/workspace.validator.js";
+import {UpdateWorkspaceInput, CreateWorkspaceInput } from "../validators/workspace.validator.js";
 import { WorkspaceMember } from "../models/workspace-member.model.js";
 import  ApiError  from "../utils/ApiError.js";
 
@@ -55,7 +55,6 @@ export const getWorkspaceById = async (
 ) => {
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -74,7 +73,6 @@ export const updateWorkspace = async (
 
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -84,11 +82,11 @@ export const updateWorkspace = async (
 
   if (data.name && data.name !== workspace.name) {
 
-    const existingWorkspace = await Workspace.findOne({
-      owner: ownerId,
-      name: data.name,
-      isDeleted: false,
-    });
+   const existingWorkspace = await Workspace.findOne({
+  owner: workspace.owner,
+  name: data.name,
+  isDeleted: false,
+});
 
     if (existingWorkspace) {
       throw new ApiError(

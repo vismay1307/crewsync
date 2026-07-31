@@ -19,7 +19,6 @@ export const addWorkspaceMember = async (
   // Check workspace exists and belongs to owner
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -83,7 +82,6 @@ export const getWorkspaceMembers = async (
   // Check workspace exists and belongs to owner
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -121,7 +119,6 @@ export const updateWorkspaceMember = async (
   // Check workspace exists and belongs to owner
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -174,7 +171,6 @@ export const removeWorkspaceMember = async (
   // Check workspace exists and belongs to owner
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 

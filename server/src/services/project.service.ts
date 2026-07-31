@@ -14,7 +14,6 @@ export const createProject = async (
 ) => {
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -50,7 +49,6 @@ export const getProjects = async (
 ) => {
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -74,7 +72,6 @@ export const getProjectById = async (
 
   const project = await Project.findOne({
     _id: projectId,
-    owner: ownerId,
     isDeleted: false,
   })
     .populate("workspace", "name emoji")
@@ -101,7 +98,6 @@ export const updateProject = async (
 
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -112,7 +108,6 @@ export const updateProject = async (
   const project = await Project.findOne({
     _id: projectId,
     workspace: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -155,7 +150,6 @@ export const deleteProject = async (
 
   const workspace = await Workspace.findOne({
     _id: workspaceId,
-    owner: ownerId,
     isDeleted: false,
   });
 

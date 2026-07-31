@@ -16,11 +16,10 @@ export const createTask = async (
   ownerId: Types.ObjectId,
   data: CreateTaskInput
 ) => {
-  const project = await Project.findOne({
-    _id: projectId,
-    owner: ownerId,
-    isDeleted: false,
-  });
+const project = await Project.findOne({
+  _id: projectId,
+  isDeleted: false,
+});
 
   if (!project) {
     throw new ApiError(404, "Project not found");
@@ -62,7 +61,6 @@ export const getTasks = async (
 ) => {
   const project = await Project.findOne({
     _id: projectId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -106,18 +104,7 @@ export const getTaskById = async (
     );
   }
 
-  const project = await Project.findOne({
-    _id: task.project,
-    owner: ownerId,
-    isDeleted: false,
-  });
 
-  if (!project) {
-    throw new ApiError(
-      403,
-      "You are not authorized to access this task."
-    );
-  }
 
   return task;
 };
@@ -130,7 +117,6 @@ export const updateTask = async (
 ) => {
   const project = await Project.findOne({
     _id: projectId,
-    owner: ownerId,
     isDeleted: false,
   });
 
@@ -189,7 +175,6 @@ export const deleteTask = async (
 ) => {
   const project = await Project.findOne({
     _id: projectId,
-    owner: ownerId,
     isDeleted: false,
   });
 

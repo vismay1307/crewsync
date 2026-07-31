@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import authorizeWorkspace from "../middlewares/auth-workspace.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
 
 import {
@@ -26,6 +27,7 @@ const router = Router({
 router.post(
   "/",
   verifyJWT,
+  authorizeWorkspace(["owner", "admin"]),
   validate(createTaskSchema),
   createTaskController
 );
@@ -33,6 +35,7 @@ router.post(
 router.get(
   "/",
   verifyJWT,
+  authorizeWorkspace(["owner", "admin", "member"]),
   validate(getTasksSchema),
   getTasksController
 );
@@ -40,6 +43,7 @@ router.get(
 router.get(
   "/:taskId",
   verifyJWT,
+  authorizeWorkspace(["owner", "admin", "member"]),
   validate(getTaskSchema),
   getTaskController
 );
@@ -47,6 +51,7 @@ router.get(
 router.patch(
   "/:taskId",
   verifyJWT,
+  authorizeWorkspace(["owner", "admin"]),
   validate(updateTaskSchema),
   updateTaskController
 );
@@ -54,6 +59,7 @@ router.patch(
 router.delete(
   "/:taskId",
   verifyJWT,
+  authorizeWorkspace(["owner", "admin"]),
   validate(deleteTaskSchema),
   deleteTaskController
 );
