@@ -11,7 +11,7 @@ export interface IWorkspaceInvitation {
 
   role: "admin" | "member";
 
-  token: string;
+  tokenHash: string;
 
   status:
     | "pending"
@@ -66,10 +66,11 @@ const workspaceInvitationSchema =
         default: "member",
       },
 
-      token: {
+      tokenHash: {
         type: String,
         required: true,
         unique: true,
+        select: false,
       },
 
       status: {

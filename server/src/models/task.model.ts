@@ -10,6 +10,7 @@ export interface ITask {
   project: Types.ObjectId;
 
   assignee?: Types.ObjectId;
+  labels: Types.ObjectId[];
 
   createdBy: Types.ObjectId;
 
@@ -22,6 +23,9 @@ export interface ITask {
   dueDate?: Date;
 
   completedAt?: Date;
+  archivedAt?: Date;
+  archivedBy?: Types.ObjectId;
+  isArchived: boolean;
 
   isDeleted: boolean;
 
@@ -59,6 +63,12 @@ const taskSchema = new Schema<ITask>(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    labels: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Label",
+      },
+    ],
 
     createdBy: {
       type: Schema.Types.ObjectId,
@@ -89,6 +99,15 @@ const taskSchema = new Schema<ITask>(
     completedAt: {
       type: Date,
     },
+    archivedAt: Date,
+    archivedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
 
     isDeleted: {
       type: Boolean,
@@ -103,5 +122,10 @@ const taskSchema = new Schema<ITask>(
     timestamps: true,
   }
 );
+
+taskSchema.index({ project: 1, isDeleted: 1, isArchived: 1 });
+taskSchema.index({ assignee: 1, status: 1, priority: 1 });
+taskSchema.index({ labels: 1 });
+taskSchema.index({ title: "text", description: "text" });
 
 export const Task = model<ITask>("Task", taskSchema);

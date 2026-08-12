@@ -20,6 +20,10 @@ import {
 } from "../controllers/workspace.controller.js";
 import projectRoutes from "./project.routes.js";
 import workspaceMemberRoutes from "./workspace-member.routes.js";
+import workspaceInvitationRoutes from "./workspace-invitation.routes.js";
+import activityRoutes from "./activity.routes.js";
+import labelRoutes from "./label.routes.js";
+import workspaceSettingsRoutes from "./workspace-settings.routes.js";
 
 const router = Router();
 
@@ -69,6 +73,26 @@ router.use(
 router.use(
   "/:workspaceId/members",
   workspaceMemberRoutes
+);
+
+router.use(
+  "/:workspaceId/invitations",
+  workspaceInvitationRoutes
+);
+
+router.use(
+  "/:workspaceId/activity",
+  activityRoutes
+);
+
+router.use(
+  "/:workspaceId/labels",
+  labelRoutes
+);
+
+router.use(
+  "/:workspaceId/settings",
+  workspaceSettingsRoutes
 );
 
 export default router;

@@ -9,6 +9,7 @@ import {
   getProjectsSchema,
   getProjectSchema,
   updateProjectSchema,
+  projectArchiveSchema,
 } from "../validators/project.validators.js";
 
 import {
@@ -17,6 +18,8 @@ import {
   getProjectController,
   updateProjectController,
   deleteProjectController,
+  archiveProjectController,
+  restoreProjectController,
 } from "../controllers/project.controller.js";
 import taskRoutes from "./task.routes.js";
 
@@ -54,6 +57,22 @@ router.patch(
   authorizeWorkspace(["owner", "admin"]),
   validate(updateProjectSchema),
   updateProjectController
+);
+
+router.post(
+  "/:projectId/archive",
+  verifyJWT,
+  authorizeWorkspace(["owner", "admin"]),
+  validate(projectArchiveSchema),
+  archiveProjectController
+);
+
+router.post(
+  "/:projectId/restore",
+  verifyJWT,
+  authorizeWorkspace(["owner", "admin"]),
+  validate(projectArchiveSchema),
+  restoreProjectController
 );
 
 router.delete(

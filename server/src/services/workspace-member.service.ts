@@ -5,6 +5,8 @@ import { WorkspaceMember } from "../models/workspace-member.model.js";
 import User from "../models/user.models.js";
 
 import ApiError from "../utils/ApiError.js";
+import { buildPaginationMeta, getPagination } from "../utils/pagination.js";
+import { getSort } from "../utils/sorting.js";
 
 import {
   AddWorkspaceMemberInput,
@@ -77,7 +79,13 @@ export const addWorkspaceMember = async (
 
 export const getWorkspaceMembers = async (
   workspaceId: Types.ObjectId,
-  ownerId: Types.ObjectId
+  ownerId: Types.ObjectId,
+  options: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  } = {}
 ) => {
   // Check workspace exists and belongs to owner
   const workspace = await Workspace.findOne({
@@ -89,24 +97,30 @@ export const getWorkspaceMembers = async (
     throw new ApiError(404, "Workspace not found");
   }
 
-  // Fetch members
-  const members = await WorkspaceMember.find({
+  const pagination = getPagination(options);
+  const query = {
     workspace: workspaceId,
     isDeleted: false,
-  })
-    .populate(
-      "user",
-      "firstName lastName email avatar"
-    )
-    .populate(
-      "invitedBy",
-      "firstName lastName email"
-    )
-    .sort({
-      createdAt: 1,
-    });
+  };
 
-  return members;
+  const [items, totalItems] = await Promise.all([
+    WorkspaceMember.find(query)
+      .populate("user", "firstName lastName email avatar")
+      .populate("invitedBy", "firstName lastName email")
+      .sort(getSort(options.sortBy ?? "createdAt", options.sortOrder))
+      .skip(pagination.skip)
+      .limit(pagination.limit),
+    WorkspaceMember.countDocuments(query),
+  ]);
+
+  return {
+    items,
+    pagination: buildPaginationMeta(
+      totalItems,
+      pagination.page,
+      pagination.limit
+    ),
+  };
 };
 
 

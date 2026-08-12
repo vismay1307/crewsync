@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { loginService,refreshAccessTokenService } from "../services/auth.services.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import { signupService,logoutService } from "../services/auth.services.js";
-import AsyncHandler from "../utils/asyncHandler.js"
+import AsyncHandler from "../utils/AsyncHandler.js"
 
 const cookieOptions = {
   httpOnly: true,

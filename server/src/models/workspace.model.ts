@@ -5,6 +5,9 @@ name:string,
 description?:string,
 owner:Types.ObjectId,
 logo?:string,
+timezone?:string,
+defaultRole?:"admin"|"member",
+colorTheme?:string,
 
 visibility:"private"|"public",
 isDeleted:boolean,
@@ -31,6 +34,19 @@ const workspaceSchema = new Schema<IWorkSpace>(
     },
     logo: {
       type: String,
+    },
+    timezone: {
+      type: String,
+      default: "UTC",
+    },
+    defaultRole: {
+      type: String,
+      enum: ["admin", "member"],
+      default: "member",
+    },
+    colorTheme: {
+      type: String,
+      default: "default",
     },
     
     visibility: {

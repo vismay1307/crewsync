@@ -21,6 +21,8 @@ export const validate =
     }
 
     req.body = result.data.body;
+    req.params = (result.data.params ?? req.params) as typeof req.params;
+    req.query = (result.data.query ?? req.query) as typeof req.query;
 
     next();
   };

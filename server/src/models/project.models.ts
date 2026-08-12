@@ -19,6 +19,9 @@ export interface IProject {
   isDeleted: boolean;
 
   deletedAt?: Date;
+  archivedAt?: Date;
+  archivedBy?: Types.ObjectId;
+  isArchived: boolean;
 
   createdAt: Date;
 
@@ -73,6 +76,15 @@ const projectSchema = new Schema<IProject>(
       type: Date,
       default: null,
     },
+    archivedAt: Date,
+    archivedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
 
   },
   {
@@ -83,6 +95,7 @@ const projectSchema = new Schema<IProject>(
 projectSchema.index({
   workspace: 1,
 });
+projectSchema.index({ workspace: 1, isDeleted: 1, isArchived: 1 });
 
 projectSchema.index({
   owner: 1,

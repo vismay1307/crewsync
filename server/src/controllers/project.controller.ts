@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 
 import asyncHandler from "../utils/AsyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import { createProject, getProjects, getProjectById, updateProject, deleteProject } from "../services/project.service.js";
+import { archiveProject, createProject, getProjects, getProjectById, restoreProject, updateProject, deleteProject } from "../services/project.service.js";
 
 export const createProjectController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -39,7 +39,8 @@ export const getProjectsController = asyncHandler(
 
     const projects = await getProjects(
       new Types.ObjectId(workspaceId),
-      ownerId
+      ownerId,
+      req.query
     );
 
     res.status(200).json(
@@ -167,3 +168,31 @@ export const deleteProjectController =
       );
 
     });
+
+export const archiveProjectController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const project = await archiveProject(
+      new Types.ObjectId(String(req.params.workspaceId)),
+      new Types.ObjectId(String(req.params.projectId)),
+      req.user!._id
+    );
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, "Project archived successfully", project));
+  }
+);
+
+export const restoreProjectController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const project = await restoreProject(
+      new Types.ObjectId(String(req.params.workspaceId)),
+      new Types.ObjectId(String(req.params.projectId)),
+      req.user!._id
+    );
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, "Project restored successfully", project));
+  }
+);

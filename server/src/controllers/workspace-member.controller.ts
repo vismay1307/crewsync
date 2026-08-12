@@ -52,7 +52,8 @@ export const getWorkspaceMembersController =
 
     const members = await getWorkspaceMembers(
       workspaceId,
-      ownerId
+      ownerId,
+      req.query
     );
 
     res.status(200).json(

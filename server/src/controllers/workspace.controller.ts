@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import  asyncHandler  from "../utils/AsyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import {updateWorkspace, createWorkspace,getWorkspaces,getWorkspaceById } from "../services/workspace.service.js";
+import {updateWorkspace, createWorkspace,getWorkspaces,getWorkspaceById, deleteWorkspace } from "../services/workspace.service.js";
 import { Types } from "mongoose";
-import { deleteWorkspace } from "../validators/workspace.validator.js";
 
 export const createWorkspaceController = asyncHandler(
   async (req: Request, res: Response) => {

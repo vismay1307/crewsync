@@ -30,6 +30,10 @@ export const getWorkspaceInvitationsSchema =
     params: z.object({
       workspaceId: objectIdSchema,
     }),
+    query: z.object({
+      page: z.coerce.number().int().min(1).optional(),
+      limit: z.coerce.number().int().min(1).max(100).optional(),
+    }),
   });
 
 export const acceptWorkspaceInvitationSchema =
@@ -56,7 +60,15 @@ export const cancelWorkspaceInvitationSchema =
 export const resendWorkspaceInvitationSchema =
   z.object({
     params: z.object({
+      workspaceId: objectIdSchema.optional(),
       invitationId: objectIdSchema,
+    }),
+  });
+
+export const previewWorkspaceInvitationSchema =
+  z.object({
+    params: z.object({
+      token: z.string().min(1),
     }),
   });
 
