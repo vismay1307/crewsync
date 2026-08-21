@@ -4,6 +4,7 @@ import { SignupData,LoginData} from "../validators/auth.validator.js";
 
 import jwt from "jsonwebtoken";
 import env from "../config/env.js";
+
 interface JwtPayload {
   userId: string;
   email?: string;
