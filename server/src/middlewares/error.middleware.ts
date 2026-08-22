@@ -7,12 +7,13 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
-
-  console.error("========== ERROR ==========");
-  console.error(err);
-  console.error("===========================");
-
   if (err instanceof ApiError) {
+    if (err.statusCode >= 500) {
+      console.error("========== ERROR ==========");
+      console.error(err);
+      console.error("===========================");
+    }
+
     res.status(err.statusCode).json({
       success: err.success,
       message: err.message,
