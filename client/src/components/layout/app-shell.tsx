@@ -5,9 +5,11 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   FiBell,
   FiBriefcase,
+  FiClock,
   FiGrid,
   FiLogOut,
   FiMenu,
+  FiSend,
   FiSettings,
   FiTag,
 } from "react-icons/fi";
@@ -46,6 +48,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             href: `/workspaces/${activeWorkspaceId}/labels`,
             label: "Labels",
             icon: FiTag,
+          },
+          {
+            href: `/workspaces/${activeWorkspaceId}/invitations`,
+            label: "Invitations",
+            icon: FiSend,
+          },
+          {
+            href: `/workspaces/${activeWorkspaceId}/activity`,
+            label: "Activity",
+            icon: FiClock,
           },
         ]
       : []),

@@ -2,6 +2,7 @@
 
 import { TaskForm } from "@/features/tasks/components/task-form";
 import { useTaskQuery } from "@/features/tasks/hooks/use-task-queries";
+import { CommentThread } from "@/features/comments/components/comment-thread";
 
 export function TaskDetail({
   projectId,
@@ -39,6 +40,7 @@ export function TaskDetail({
           workspaceId={workspaceId}
         />
       </section>
+      <CommentThread projectId={projectId} taskId={taskId} workspaceId={workspaceId} />
     </main>
   );
 }
