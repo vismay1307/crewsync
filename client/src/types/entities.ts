@@ -44,7 +44,11 @@ export type Project = MongoEntity & {
   description?: string;
   emoji?: string;
   status: ProjectStatus;
-  createdBy: string | User;
+  owner: string | User;
+  createdBy?: string | User;
+  isArchived?: boolean;
+  archivedAt?: string;
+  archivedBy?: string | User;
   isDeleted?: boolean;
 };
 

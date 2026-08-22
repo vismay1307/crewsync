@@ -10,12 +10,6 @@ import { useWorkspacesQuery } from "@/features/workspaces/hooks/use-workspace-qu
 import { setActiveWorkspaceId, setSidebarCollapsed } from "@/store/ui-slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: FiGrid },
-  { href: "/workspaces", label: "Workspaces", icon: FiBriefcase },
-  { href: "/notifications", label: "Notifications", icon: FiBell },
-];
-
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -25,6 +19,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
   const logoutMutation = useLogoutMutation();
   const workspacesQuery = useWorkspacesQuery();
+  const navItems = [
+    { href: "/dashboard", label: "Dashboard", icon: FiGrid },
+    { href: "/workspaces", label: "Workspaces", icon: FiBriefcase },
+    ...(activeWorkspaceId
+      ? [
+          {
+            href: `/workspaces/${activeWorkspaceId}/projects`,
+            label: "Projects",
+            icon: FiBriefcase,
+          },
+          {
+            href: `/workspaces/${activeWorkspaceId}/members`,
+            label: "Members",
+            icon: FiGrid,
+          },
+        ]
+      : []),
+    { href: "/notifications", label: "Notifications", icon: FiBell },
+  ];
 
   function handleWorkspaceChange(workspaceId: string) {
     dispatch(setActiveWorkspaceId(workspaceId || null));
