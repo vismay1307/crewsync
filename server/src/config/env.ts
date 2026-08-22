@@ -21,7 +21,7 @@ ACCESS_TOKEN_EXPIRY: (process.env.ACCESS_TOKEN_EXPIRY ??
 
 
   CLIENT_URL:
-    process.env.CLIENT_URL || "http://localhost:5173",
+    process.env.CLIENT_URL || "http://localhost:3000",
 
     SMTP_HOST: process.env.SMTP_HOST!,
 
