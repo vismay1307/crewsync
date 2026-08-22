@@ -1,15 +1,5 @@
-import { authService } from "@/features/auth/services/auth.service";
+import { redirect } from "next/navigation";
 
-export default async function Home() {
-  const user = await authService.getCurrentUser();
-
-  return (
-    <main>
-      <h1>
-        {user.firstName} {user.lastName}
-      </h1>
-
-      <p>{user.email}</p>
-    </main>
-  );
+export default function Home() {
+  redirect("/login");
 }
