@@ -18,6 +18,11 @@ export type WorkspaceRole = "owner" | "admin" | "member";
 export type Workspace = MongoEntity & {
   name: string;
   description?: string;
+  logo?: string;
+  visibility?: "private" | "public";
+  timezone?: string;
+  defaultRole?: "admin" | "member";
+  colorTheme?: string;
   owner: string | User;
   isDeleted?: boolean;
 };
