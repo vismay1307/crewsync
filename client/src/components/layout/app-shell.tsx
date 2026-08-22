@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FiBell, FiBriefcase, FiGrid, FiLogOut, FiMenu, FiSettings } from "react-icons/fi";
+import {
+  FiBell,
+  FiBriefcase,
+  FiGrid,
+  FiLogOut,
+  FiMenu,
+  FiSettings,
+  FiTag,
+} from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
 import { useLogoutMutation } from "@/features/auth/hooks/use-auth-mutations";
@@ -33,6 +41,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             href: `/workspaces/${activeWorkspaceId}/members`,
             label: "Members",
             icon: FiGrid,
+          },
+          {
+            href: `/workspaces/${activeWorkspaceId}/labels`,
+            label: "Labels",
+            icon: FiTag,
           },
         ]
       : []),

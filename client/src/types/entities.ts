@@ -56,7 +56,7 @@ export type TaskStatus = "todo" | "in_progress" | "review" | "done";
 export type TaskPriority = "low" | "medium" | "high" | "critical";
 
 export type Task = MongoEntity & {
-  workspace: string | Workspace;
+  workspace?: string | Workspace;
   project: string | Project;
   title: string;
   description?: string;
@@ -67,7 +67,12 @@ export type Task = MongoEntity & {
   startDate?: string;
   dueDate?: string;
   completed?: boolean;
+  completedAt?: string;
   labels?: Array<string | Label>;
+  isOverdue?: boolean;
+  isArchived?: boolean;
+  archivedAt?: string;
+  archivedBy?: string | User;
   isDeleted?: boolean;
 };
 

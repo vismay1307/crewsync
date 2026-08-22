@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { ProjectForm } from "@/features/projects/components/project-form";
 import { useProjectQuery } from "@/features/projects/hooks/use-project-queries";
 
@@ -32,7 +34,15 @@ export function ProjectDetail({
         </p>
       </div>
       <section className="max-w-xl rounded-lg border border-border bg-card p-5">
-        <h2 className="mb-4 text-base font-semibold">Project profile</h2>
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <h2 className="text-base font-semibold">Project profile</h2>
+          <Link
+            className="inline-flex h-9 items-center rounded-md border border-border px-3 text-sm hover:bg-background"
+            href={`/workspaces/${workspaceId}/projects/${projectId}/tasks`}
+          >
+            Tasks
+          </Link>
+        </div>
         <ProjectForm mode="update" project={projectQuery.data} workspaceId={workspaceId} />
       </section>
     </main>
