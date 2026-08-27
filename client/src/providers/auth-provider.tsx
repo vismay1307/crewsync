@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-
+import { usePathname } from "next/navigation";
 import { ApiError } from "@/lib/api/client";
 import {
   authAuthenticated,
@@ -14,7 +14,13 @@ import { useCurrentUserQuery } from "@/features/auth/hooks/use-current-user-quer
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
-  const currentUserQuery = useCurrentUserQuery();
+  const pathname = usePathname();
+
+const isAuthPage =
+  pathname === "/login" ||
+  pathname === "/signup";
+
+const currentUserQuery = useCurrentUserQuery(!isAuthPage);
 
   useEffect(() => {
     if (currentUserQuery.isPending) {
