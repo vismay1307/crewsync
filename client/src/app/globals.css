@@ -1,24 +1,36 @@
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
 
 :root {
-  --background: #f7f8fa;
-  --foreground: #171a1f;
-  --card: #ffffff;
-  --border: #d9dee7;
-  --muted: #697386;
-  --primary: #2458d3;
-  --primary-foreground: #ffffff;
-  --accent: #0f766e;
-  --destructive: #c2410c;
-  --success: #15803d;
-  --warning: #b45309;
+  color-scheme: dark;
+  --background: #081315;
+  --foreground: #f4efe7;
+  --surface: #0d1c1f;
+  --surface-raised: #13282c;
+  --surface-inset: #091719;
+  --surface-highlight: #183236;
+  --card: #102225;
+  --border: #254044;
+  --border-strong: #3a666c;
+  --muted: #90a6a7;
+  --primary: #42d9c8;
+  --primary-foreground: #031313;
+  --accent: #ffb454;
+  --destructive: #ff6f61;
+  --success: #73d99f;
+  --warning: #ffc857;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-inset: var(--surface-inset);
+  --color-surface-highlight: var(--surface-highlight);
   --color-card: var(--card);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-muted: var(--muted);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
@@ -30,22 +42,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #101318;
-    --foreground: #eef1f6;
-    --card: #171b22;
-    --border: #2c3440;
-    --muted: #98a2b3;
-    --primary: #7aa2ff;
-    --primary-foreground: #07111f;
-    --accent: #5ee0cf;
-    --destructive: #fb923c;
-    --success: #4ade80;
-    --warning: #fbbf24;
-  }
-}
-
 * {
   box-sizing: border-box;
 }
@@ -53,6 +49,147 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Inter, Arial, Helvetica, sans-serif;
   margin: 0;
+  text-rendering: geometricPrecision;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--primary) 32%, transparent);
+  color: var(--foreground);
+}
+
+.cs-page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.cs-page-header {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 52rem;
+}
+
+.cs-page-title {
+  color: var(--foreground);
+  font-size: 1.75rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 2.15rem;
+}
+
+.cs-page-description {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.55rem;
+}
+
+.cs-section-title {
+  color: var(--foreground);
+  font-size: 1.0625rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.6rem;
+}
+
+.cs-card {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-raised) 88%, white 2%), var(--card));
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.cs-form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid color-mix(in srgb, var(--primary) 76%, transparent);
+  border-radius: 0.5rem;
+}
+
+.cs-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.cs-row {
+  border-top: 1px solid var(--border);
+}
+
+.cs-row:first-child {
+  border-top: 0;
+}
+
+.cs-row:hover {
+  background: color-mix(in srgb, var(--surface-highlight) 70%, transparent);
+}
+
+.cs-empty {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-raised) 74%, transparent), var(--surface));
+  border: 1px dashed var(--border-strong);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+}
+
+.cs-empty::before {
+  background: var(--primary);
+  border-radius: 999px;
+  content: "";
+  display: block;
+  height: 0.35rem;
+  margin-bottom: 0.875rem;
+  width: 2.25rem;
+}
+
+.cs-link-button {
+  align-items: center;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  color: var(--foreground);
+  display: inline-flex;
+  font-size: 0.875rem;
+  font-weight: 600;
+  gap: 0.5rem;
+  height: 2.25rem;
+  justify-content: center;
+  padding: 0 0.75rem;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.cs-link-button:hover {
+  background: var(--surface-highlight);
+  border-color: var(--border-strong);
+}
+
+.cs-textarea {
+  background: var(--surface-inset);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  outline: none;
+  padding: 0.625rem 0.75rem;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+  width: 100%;
+}
+
+.cs-textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.cs-meta-pill {
+  align-items: center;
+  background: color-mix(in srgb, var(--surface-highlight) 68%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 0.75rem;
+  height: 1.65rem;
+  padding: 0 0.6rem;
 }

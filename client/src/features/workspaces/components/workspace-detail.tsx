@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/components/ui/card";
 import { WorkspaceForm } from "@/features/workspaces/components/workspace-form";
 import { useWorkspaceQuery } from "@/features/workspaces/hooks/use-workspace-queries";
 import { WorkspaceSettingsLink } from "@/components/layout/app-shell";
@@ -16,20 +17,20 @@ export function WorkspaceDetail({ workspaceId }: { workspaceId: string }) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="cs-page">
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-semibold">{workspaceQuery.data.name}</h1>
-          <p className="mt-1 max-w-2xl text-sm text-muted">
+        <div className="cs-page-header">
+          <h1 className="cs-page-title">{workspaceQuery.data.name}</h1>
+          <p className="cs-page-description">
             {workspaceQuery.data.description || "No description"}
           </p>
         </div>
         <WorkspaceSettingsLink workspaceId={workspaceId} />
       </div>
-      <section className="max-w-xl rounded-lg border border-border bg-card p-5">
-        <h2 className="mb-4 text-base font-semibold">Workspace profile</h2>
+      <Card className="max-w-xl p-5" variant="form">
+        <h2 className="mb-4 cs-section-title">Workspace profile</h2>
         <WorkspaceForm mode="update" workspace={workspaceQuery.data} />
-      </section>
+      </Card>
     </div>
   );
 }

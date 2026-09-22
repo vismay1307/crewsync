@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { Card } from "@/components/ui/card";
 import { ProjectForm } from "@/features/projects/components/project-form";
 import { useProjectQuery } from "@/features/projects/hooks/use-project-queries";
 
@@ -23,28 +24,28 @@ export function ProjectDetail({
   }
 
   return (
-    <main className="space-y-5">
-      <div>
-        <h1 className="text-xl font-semibold">
+    <main className="cs-page">
+      <div className="cs-page-header">
+        <h1 className="cs-page-title">
           {projectQuery.data.emoji ? `${projectQuery.data.emoji} ` : ""}
           {projectQuery.data.name}
         </h1>
-        <p className="mt-1 max-w-2xl text-sm text-muted">
+        <p className="cs-page-description">
           {projectQuery.data.description || "No description"}
         </p>
       </div>
-      <section className="max-w-xl rounded-lg border border-border bg-card p-5">
+      <Card className="max-w-xl p-5" variant="form">
         <div className="mb-4 flex items-center justify-between gap-4">
-          <h2 className="text-base font-semibold">Project profile</h2>
+          <h2 className="cs-section-title">Project profile</h2>
           <Link
-            className="inline-flex h-9 items-center rounded-md border border-border px-3 text-sm hover:bg-background"
+            className="cs-link-button"
             href={`/workspaces/${workspaceId}/projects/${projectId}/tasks`}
           >
             Tasks
           </Link>
         </div>
         <ProjectForm mode="update" project={projectQuery.data} workspaceId={workspaceId} />
-      </section>
+      </Card>
     </main>
   );
 }

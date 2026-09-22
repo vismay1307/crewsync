@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { FiArchive, FiArrowRight, FiRotateCcw, FiTrash2 } from "react-icons/fi";
+import { FiArchive, FiRotateCcw, FiTrash2 } from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   useTaskActionMutations,
   useTasksQuery,
@@ -46,29 +47,29 @@ export function TaskList({
 
   if (!tasksQuery.data.items.length) {
     return (
-      <div className="rounded-lg border border-border bg-card p-5">
-        <h2 className="text-base font-semibold">
+      <Card className="p-5" variant="empty">
+        <h2 className="cs-section-title">
           {archived ? "No archived tasks" : "No tasks yet"}
         </h2>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-sm leading-6 text-muted">
           {archived ? "Archived backend tasks appear here." : "Create a task to track project work."}
         </p>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="divide-y divide-border rounded-lg border border-border bg-card">
+    <Card variant="list">
       {tasksQuery.data.items.map((task) => (
-        <div className="grid gap-3 p-4 lg:grid-cols-[minmax(0,1fr)_120px_120px_180px] lg:items-center" key={task._id}>
+        <div className="cs-row grid gap-3 p-4 transition-colors lg:grid-cols-[minmax(0,1fr)_120px_120px_180px] lg:items-center" key={task._id}>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold">{task.title}</h2>
+            <h2 className="truncate text-sm font-semibold text-foreground">{task.title}</h2>
             <p className="mt-1 line-clamp-2 text-sm text-muted">
               {task.description || "No description"}
             </p>
           </div>
-          <span className="text-sm text-muted">{statusLabel[task.status]}</span>
-          <span className="text-sm text-muted">{priorityLabel[task.priority]}</span>
+          <span className="cs-meta-pill justify-center">{statusLabel[task.status]}</span>
+          <span className="cs-meta-pill justify-center">{priorityLabel[task.priority]}</span>
           <div className="flex items-center gap-2">
             {archived ? (
               <Button
@@ -96,16 +97,15 @@ export function TaskList({
             </Button>
             {!archived ? (
               <Link
-                className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-3 text-sm hover:bg-background"
+                className="cs-link-button"
                 href={`/workspaces/${workspaceId}/projects/${projectId}/tasks/${task._id}`}
               >
                 Open
-                <FiArrowRight size={15} />
               </Link>
             ) : null}
           </div>
         </div>
       ))}
-    </div>
+    </Card>
   );
 }

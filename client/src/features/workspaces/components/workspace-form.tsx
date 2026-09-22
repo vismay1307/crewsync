@@ -4,6 +4,8 @@ import { FormEvent, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { ApiError } from "@/lib/api/client";
 import {
   useCreateWorkspaceMutation,
@@ -64,32 +66,23 @@ export function WorkspaceForm({
         onChange={(event) => setName(event.target.value)}
         value={name}
       />
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium" htmlFor="workspaceDescription">
-          Description
-        </label>
-        <textarea
-          className="min-h-24 w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary"
-          id="workspaceDescription"
-          maxLength={500}
-          onChange={(event) => setDescription(event.target.value)}
-          value={description}
-        />
-      </div>
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium" htmlFor="workspaceVisibility">
-          Visibility
-        </label>
-        <select
-          className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus:border-primary"
-          id="workspaceVisibility"
-          onChange={(event) => setVisibility(event.target.value as "private" | "public")}
-          value={visibility}
-        >
-          <option value="private">Private</option>
-          <option value="public">Public</option>
-        </select>
-      </div>
+      <Textarea
+        className="min-h-24"
+        label="Description"
+        maxLength={500}
+        name="workspaceDescription"
+        onChange={(event) => setDescription(event.target.value)}
+        value={description}
+      />
+      <Select
+        label="Visibility"
+        name="workspaceVisibility"
+        onChange={(event) => setVisibility(event.target.value as "private" | "public")}
+        value={visibility}
+      >
+        <option value="private">Private</option>
+        <option value="public">Public</option>
+      </Select>
       {apiError ? <p className="text-sm text-destructive">{apiError}</p> : null}
       <Button disabled={!canSubmit} type="submit">
         {mutation.isPending

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   useNotificationActions,
   useNotificationsQuery,
@@ -31,10 +32,10 @@ export function NotificationList() {
 
   if (!notificationsQuery.data.items.length) {
     return (
-      <div className="rounded-lg border border-border bg-card p-5">
-        <h2 className="text-base font-semibold">No notifications</h2>
-        <p className="mt-1 text-sm text-muted">Activity directed to you appears here.</p>
-      </div>
+      <Card className="p-5" variant="empty">
+        <h2 className="cs-section-title">No notifications</h2>
+        <p className="mt-1 text-sm leading-6 text-muted">Activity directed to you appears here.</p>
+      </Card>
     );
   }
 
@@ -49,11 +50,11 @@ export function NotificationList() {
           Mark all read
         </Button>
       </div>
-      <div className="divide-y divide-border rounded-lg border border-border bg-card">
+      <Card variant="list">
         {notificationsQuery.data.items.map((notification) => (
-          <article className="flex items-center justify-between gap-4 p-4" key={notification._id}>
+          <article className="cs-row flex items-center justify-between gap-4 p-4 transition-colors" key={notification._id}>
             <div className="min-w-0">
-              <h2 className="truncate text-sm font-semibold">{notification.type}</h2>
+              <h2 className="truncate text-sm font-semibold text-foreground">{notification.type}</h2>
               <p className="mt-1 text-sm text-muted">
                 {actorName(notification.actor)}
                 {workspaceName(notification.workspace) ? ` in ${workspaceName(notification.workspace)}` : ""}
@@ -68,7 +69,7 @@ export function NotificationList() {
             </Button>
           </article>
         ))}
-      </div>
+      </Card>
     </section>
   );
 }

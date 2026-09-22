@@ -15,6 +15,7 @@ import {
 } from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { useLogoutMutation } from "@/features/auth/hooks/use-auth-mutations";
 import { useWorkspacesQuery } from "@/features/workspaces/hooks/use-workspace-queries";
 import { setActiveWorkspaceId, setSidebarCollapsed } from "@/store/ui-slice";
@@ -74,41 +75,44 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <aside
-        className={`fixed inset-y-0 left-0 z-20 hidden border-r border-border bg-card transition-[width] md:block ${
+        className={`fixed inset-y-0 left-0 z-20 hidden border-r border-border bg-surface transition-[width] md:block ${
           sidebarCollapsed ? "w-16" : "w-64"
         }`}
       >
-        <div className="flex h-14 items-center justify-between border-b border-border px-4">
+        <div className="flex h-16 items-center justify-between border-b border-border px-4">
           {!sidebarCollapsed ? (
-            <Link className="text-sm font-semibold tracking-normal" href="/dashboard">
-              CrewSync
+            <Link className="flex items-center gap-3 text-sm font-semibold tracking-normal" href="/dashboard">
+              <span className="grid h-8 w-8 place-items-center rounded-md border border-primary/30 bg-primary/12 text-primary">
+                C
+              </span>
+              <span className="text-base">CrewSync</span>
             </Link>
           ) : null}
           <button
             aria-label="Toggle sidebar"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted hover:bg-background hover:text-foreground"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-surface-highlight hover:text-foreground"
             onClick={() => dispatch(setSidebarCollapsed(!sidebarCollapsed))}
             type="button"
           >
             <FiMenu size={17} />
           </button>
         </div>
-        <nav className="space-y-1 p-3">
+        <nav className="space-y-1.5 p-3">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
             return (
               <Link
-                className={`flex h-9 items-center gap-3 rounded-md px-3 text-sm transition-colors ${
+                className={`relative flex h-10 items-center gap-3 rounded-md px-3 text-sm transition-all ${
                   active
-                    ? "bg-background text-foreground"
-                    : "text-muted hover:bg-background hover:text-foreground"
+                    ? "bg-primary/12 text-foreground shadow-[inset_3px_0_0_var(--primary)]"
+                    : "text-muted hover:bg-surface-highlight hover:text-foreground"
                 }`}
                 href={item.href}
                 key={item.href}
               >
-                <Icon size={16} />
+                <Icon className={active ? "text-primary" : ""} size={16} />
                 {!sidebarCollapsed ? <span>{item.label}</span> : null}
               </Link>
             );
@@ -117,13 +121,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className={sidebarCollapsed ? "md:pl-16" : "md:pl-64"}>
-        <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-border bg-card px-4">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-background/90 px-5 backdrop-blur sm:px-8">
           <div className="flex items-center gap-3">
             <Link className="text-sm font-semibold md:hidden" href="/dashboard">
               CrewSync
             </Link>
-            <select
-              className="h-9 max-w-56 rounded-md border border-border bg-card px-3 text-sm outline-none focus:border-primary"
+            <Select
+              className="max-w-56"
               onChange={(event) => handleWorkspaceChange(event.target.value)}
               value={activeWorkspaceId ?? ""}
             >
@@ -133,7 +137,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {workspace.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden text-sm text-muted sm:inline">
@@ -150,7 +154,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Button>
           </div>
         </header>
-        <div className="px-4 py-5 sm:px-6">{children}</div>
+        <div className="px-5 py-6 sm:px-8">{children}</div>
       </div>
     </div>
   );
@@ -159,7 +163,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 export function WorkspaceSettingsLink({ workspaceId }: { workspaceId: string }) {
   return (
     <Link
-      className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-3 text-sm text-foreground hover:bg-background"
+      className="cs-link-button"
       href={`/workspaces/${workspaceId}/settings`}
     >
       <FiSettings size={15} />

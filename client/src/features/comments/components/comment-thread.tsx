@@ -4,6 +4,8 @@ import { FormEvent, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import {
   useCommentsQuery,
   useCreateCommentMutation,
@@ -49,11 +51,11 @@ export function CommentThread({
       : createMutation.error?.message;
 
   return (
-    <section className="max-w-2xl rounded-lg border border-border bg-card p-5">
-      <h2 className="text-base font-semibold">Comments</h2>
+    <Card className="max-w-2xl p-5">
+      <h2 className="cs-section-title">Comments</h2>
       <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
-        <textarea
-          className="min-h-24 w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary"
+        <Textarea
+          className="min-h-24"
           maxLength={5000}
           onChange={(event) => setBody(event.target.value)}
           placeholder="Add a comment"
@@ -73,7 +75,7 @@ export function CommentThread({
           <p className="text-sm text-muted">No comments yet</p>
         ) : null}
         {commentsQuery.data?.items.map((comment) => (
-          <article className="rounded-md border border-border p-3" key={comment._id}>
+          <article className="rounded-md border border-border bg-surface p-3" key={comment._id}>
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm font-medium">{userName(comment.user)}</p>
@@ -90,6 +92,6 @@ export function CommentThread({
           </article>
         ))}
       </div>
-    </section>
+    </Card>
   );
 }

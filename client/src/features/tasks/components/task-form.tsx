@@ -4,6 +4,8 @@ import { FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import {
   useCreateTaskMutation,
   useUpdateTaskMutation,
@@ -65,38 +67,28 @@ export function TaskForm({
         value={title}
       />
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <label className="block text-sm font-medium" htmlFor="taskStatus">
-            Status
-          </label>
-          <select
-            className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus:border-primary"
-            id="taskStatus"
-            onChange={(event) => setStatus(event.target.value as TaskStatus)}
-            value={status}
-          >
-            <option value="todo">Todo</option>
-            <option value="in_progress">In progress</option>
-            <option value="review">Review</option>
-            <option value="done">Done</option>
-          </select>
-        </div>
-        <div className="space-y-1.5">
-          <label className="block text-sm font-medium" htmlFor="taskPriority">
-            Priority
-          </label>
-          <select
-            className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus:border-primary"
-            id="taskPriority"
-            onChange={(event) => setPriority(event.target.value as TaskPriority)}
-            value={priority}
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="critical">Critical</option>
-          </select>
-        </div>
+        <Select
+          label="Status"
+          name="taskStatus"
+          onChange={(event) => setStatus(event.target.value as TaskStatus)}
+          value={status}
+        >
+          <option value="todo">Todo</option>
+          <option value="in_progress">In progress</option>
+          <option value="review">Review</option>
+          <option value="done">Done</option>
+        </Select>
+        <Select
+          label="Priority"
+          name="taskPriority"
+          onChange={(event) => setPriority(event.target.value as TaskPriority)}
+          value={priority}
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="critical">Critical</option>
+        </Select>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
@@ -114,18 +106,14 @@ export function TaskForm({
           value={dueDate}
         />
       </div>
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium" htmlFor="taskDescription">
-          Description
-        </label>
-        <textarea
-          className="min-h-28 w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary"
-          id="taskDescription"
-          maxLength={5000}
-          onChange={(event) => setDescription(event.target.value)}
-          value={description}
-        />
-      </div>
+      <Textarea
+        className="min-h-28"
+        label="Description"
+        maxLength={5000}
+        name="taskDescription"
+        onChange={(event) => setDescription(event.target.value)}
+        value={description}
+      />
       {apiError ? <p className="text-sm text-destructive">{apiError}</p> : null}
       <Button disabled={!canSubmit} type="submit">
         {mutation.isPending

@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/components/ui/card";
 import { useActivityQuery } from "@/features/activity/hooks/use-activity-queries";
 import type { User } from "@/types/entities";
 
@@ -21,20 +22,20 @@ export function ActivityList({ workspaceId }: { workspaceId: string }) {
 
   if (!activityQuery.data.items.length) {
     return (
-      <div className="rounded-lg border border-border bg-card p-5">
-        <h2 className="text-base font-semibold">No activity yet</h2>
-        <p className="mt-1 text-sm text-muted">Workspace changes appear here.</p>
-      </div>
+      <Card className="p-5" variant="empty">
+        <h2 className="cs-section-title">No activity yet</h2>
+        <p className="mt-1 text-sm leading-6 text-muted">Workspace changes appear here.</p>
+      </Card>
     );
   }
 
   return (
-    <div className="divide-y divide-border rounded-lg border border-border bg-card">
+    <Card variant="list">
       {activityQuery.data.items.map((entry) => (
-        <article className="grid gap-2 p-4 md:grid-cols-[180px_minmax(0,1fr)_180px]" key={entry._id}>
+        <article className="cs-row grid gap-2 p-4 transition-colors md:grid-cols-[180px_minmax(0,1fr)_180px]" key={entry._id}>
           <p className="text-sm font-medium">{actorName(entry.actor)}</p>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold">{entry.action}</h2>
+            <h2 className="truncate text-sm font-semibold text-foreground">{entry.action}</h2>
             <p className="mt-1 text-sm text-muted">{entry.resourceType}</p>
           </div>
           <time className="text-sm text-muted" dateTime={entry.createdAt}>
@@ -42,6 +43,6 @@ export function ActivityList({ workspaceId }: { workspaceId: string }) {
           </time>
         </article>
       ))}
-    </div>
+    </Card>
   );
 }

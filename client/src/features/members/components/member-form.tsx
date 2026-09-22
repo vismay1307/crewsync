@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { ApiError } from "@/lib/api/client";
 import { useAddMemberMutation } from "@/features/members/hooks/use-member-queries";
 import type { WorkspaceRole } from "@/types/entities";
@@ -39,20 +40,15 @@ export function MemberForm({ workspaceId }: { workspaceId: string }) {
         type="email"
         value={email}
       />
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium" htmlFor="memberRole">
-          Role
-        </label>
-        <select
-          className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus:border-primary"
-          id="memberRole"
-          onChange={(event) => setRole(event.target.value as Exclude<WorkspaceRole, "owner">)}
-          value={role}
-        >
-          <option value="member">Member</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
+      <Select
+        label="Role"
+        name="memberRole"
+        onChange={(event) => setRole(event.target.value as Exclude<WorkspaceRole, "owner">)}
+        value={role}
+      >
+        <option value="member">Member</option>
+        <option value="admin">Admin</option>
+      </Select>
       {apiError ? <p className="text-sm text-destructive">{apiError}</p> : null}
       <Button disabled={!canSubmit} type="submit">
         {addMutation.isPending ? "Adding" : "Add member"}

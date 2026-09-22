@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { FiArrowRight, FiTrash2 } from "react-icons/fi";
+import { FiTrash2 } from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   useDeleteWorkspaceMutation,
   useWorkspacesQuery,
@@ -23,19 +24,19 @@ export function WorkspaceList() {
 
   if (!workspacesQuery.data.length) {
     return (
-      <div className="rounded-lg border border-border bg-card p-5">
-        <h2 className="text-base font-semibold">No workspaces yet</h2>
-        <p className="mt-1 text-sm text-muted">Create a workspace to start organizing projects.</p>
-      </div>
+      <Card className="p-5" variant="empty">
+        <h2 className="cs-section-title">No workspaces yet</h2>
+        <p className="mt-1 text-sm leading-6 text-muted">Create a workspace to start organizing projects.</p>
+      </Card>
     );
   }
 
   return (
-    <div className="divide-y divide-border rounded-lg border border-border bg-card">
+    <Card variant="list">
       {workspacesQuery.data.map((workspace) => (
-        <div className="flex items-center justify-between gap-4 p-4" key={workspace._id}>
+        <div className="cs-row flex items-center justify-between gap-4 p-4 transition-colors" key={workspace._id}>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold">{workspace.name}</h2>
+            <h2 className="truncate text-sm font-semibold text-foreground">{workspace.name}</h2>
             <p className="mt-1 line-clamp-2 text-sm text-muted">
               {workspace.description || "No description"}
             </p>
@@ -50,15 +51,14 @@ export function WorkspaceList() {
               <FiTrash2 size={15} />
             </Button>
             <Link
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-3 text-sm hover:bg-background"
+              className="cs-link-button"
               href={`/workspaces/${workspace._id}`}
             >
               Open
-              <FiArrowRight size={15} />
             </Link>
           </div>
         </div>
       ))}
-    </div>
+    </Card>
   );
 }

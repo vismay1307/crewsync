@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   useAcceptInvitationMutation,
   useInvitationPreviewQuery,
@@ -35,8 +36,8 @@ export function InvitationReview({ token }: { token: string }) {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-4 py-8">
-      <section className="rounded-lg border border-border bg-card p-6">
-        <h1 className="text-xl font-semibold">{workspaceName(previewQuery.data.workspace)}</h1>
+      <Card className="p-6">
+        <h1 className="cs-page-title">{workspaceName(previewQuery.data.workspace)}</h1>
         <p className="mt-2 text-sm text-muted">
           {invitedByName(previewQuery.data.invitedBy)} invited {previewQuery.data.email} as{" "}
           {previewQuery.data.role}.
@@ -66,7 +67,7 @@ export function InvitationReview({ token }: { token: string }) {
         {rejectMutation.error ? (
           <p className="mt-3 text-sm text-destructive">{rejectMutation.error.message}</p>
         ) : null}
-      </section>
+      </Card>
     </main>
   );
 }

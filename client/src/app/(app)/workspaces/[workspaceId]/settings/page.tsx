@@ -8,10 +8,10 @@ export default async function WorkspaceSettingsPage({
   const { workspaceId } = await params;
 
   return (
-    <main className="space-y-5">
-      <div>
-        <h1 className="text-xl font-semibold">Workspace settings</h1>
-        <p className="mt-1 text-sm text-muted">Settings use the backend workspace settings endpoint.</p>
+    <main className="cs-page">
+      <div className="cs-page-header">
+        <h1 className="cs-page-title">Workspace settings</h1>
+        <p className="cs-page-description">Settings use the backend workspace settings endpoint.</p>
       </div>
       <WorkspaceSettingsForm workspaceId={workspaceId} />
     </main>

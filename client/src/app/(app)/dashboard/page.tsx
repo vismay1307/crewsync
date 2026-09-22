@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FiArrowRight } from "react-icons/fi";
 
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWorkspacesQuery } from "@/features/workspaces/hooks/use-workspace-queries";
 import { useAppSelector } from "@/store/hooks";
 
@@ -13,32 +13,29 @@ export default function DashboardPage() {
   const recentWorkspaces = workspaces.slice(0, 5);
 
   return (
-    <main className="space-y-5">
-      <section>
-        <h1 className="text-xl font-semibold">Dashboard</h1>
-        <p className="mt-1 text-sm text-muted">
+    <main className="cs-page">
+      <section className="cs-page-header">
+        <h1 className="cs-page-title">Dashboard</h1>
+        <p className="cs-page-description">
           Signed in as {currentUser?.firstName} {currentUser?.lastName}.
         </p>
       </section>
-      <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="rounded-lg border border-border bg-card">
-          <div className="flex items-center justify-between gap-4 border-b border-border p-5">
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <Card>
+          <CardHeader className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-base font-semibold">Recent workspaces</h2>
-              <p className="mt-1 text-sm text-muted">
+              <CardTitle>Recent workspaces</CardTitle>
+              <CardDescription>
                 {workspacesQuery.isSuccess
                   ? `${workspaces.length} workspace${workspaces.length === 1 ? "" : "s"} available.`
                   : "Workspace records load from the backend."}
-              </p>
+              </CardDescription>
             </div>
-            <Link
-              className="inline-flex h-9 items-center rounded-md border border-border px-3 text-sm hover:bg-background"
-              href="/workspaces"
-            >
+            <Link className="cs-link-button" href="/workspaces">
               Manage
             </Link>
-          </div>
-          <div className="divide-y divide-border">
+          </CardHeader>
+          <div>
             {workspacesQuery.isPending ? (
               <p className="p-5 text-sm text-muted">Loading workspaces</p>
             ) : null}
@@ -46,40 +43,37 @@ export default function DashboardPage() {
               <p className="p-5 text-sm text-destructive">{workspacesQuery.error.message}</p>
             ) : null}
             {workspacesQuery.isSuccess && recentWorkspaces.length === 0 ? (
-              <div className="p-5">
-                <h3 className="text-sm font-semibold">No workspaces yet</h3>
-                <p className="mt-1 text-sm text-muted">Create a workspace to start organizing projects.</p>
+              <div className="m-5 cs-empty">
+                <h3 className="cs-section-title">No workspaces yet</h3>
+                <p className="mt-1 text-sm leading-6 text-muted">Create a workspace to start organizing projects.</p>
               </div>
             ) : null}
             {recentWorkspaces.map((workspace) => (
               <Link
-                className="flex items-center justify-between gap-4 p-4 hover:bg-background"
+                className="cs-row flex items-center justify-between gap-4 p-4 transition-colors"
                 href={`/workspaces/${workspace._id}`}
                 key={workspace._id}
               >
                 <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold">{workspace.name}</h3>
+                  <h3 className="truncate text-sm font-semibold text-foreground">{workspace.name}</h3>
                   <p className="mt-1 truncate text-sm text-muted">
                     {workspace.description || workspace.visibility || "Workspace"}
                   </p>
                 </div>
-                <FiArrowRight className="shrink-0 text-muted" size={16} />
+                <span className="cs-meta-pill shrink-0">{workspace.visibility || "Workspace"}</span>
               </Link>
             ))}
           </div>
-        </div>
-        <aside className="rounded-lg border border-border bg-card p-5">
-          <h2 className="text-base font-semibold">Quick actions</h2>
+        </Card>
+        <aside className="cs-form-card p-5">
+          <h2 className="cs-section-title">Quick actions</h2>
           <div className="mt-4 grid gap-2">
-            <Link
-              className="inline-flex h-9 items-center rounded-md border border-border px-3 text-sm hover:bg-background"
-              href="/workspaces"
-            >
+            <Link className="cs-link-button justify-start" href="/workspaces">
               Create workspace
             </Link>
             {recentWorkspaces[0] ? (
               <Link
-                className="inline-flex h-9 items-center rounded-md border border-border px-3 text-sm hover:bg-background"
+                className="cs-link-button justify-start"
                 href={`/workspaces/${recentWorkspaces[0]._id}/projects`}
               >
                 Open projects
@@ -88,10 +82,10 @@ export default function DashboardPage() {
           </div>
         </aside>
       </section>
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="cs-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-base font-semibold">Backend data only</h2>
+            <h2 className="cs-section-title">Backend data only</h2>
             <p className="mt-1 text-sm text-muted">
               This dashboard summarizes real workspace records already loaded through TanStack Query.
             </p>

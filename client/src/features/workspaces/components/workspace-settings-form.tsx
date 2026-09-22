@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import {
   useUpdateWorkspaceSettingsMutation,
   useWorkspaceSettingsQuery,
@@ -58,7 +59,7 @@ function WorkspaceSettingsFields({
   }
 
   return (
-    <form className="max-w-xl space-y-4 rounded-lg border border-border bg-card p-5" onSubmit={handleSubmit}>
+    <form className="cs-form-card max-w-xl space-y-4 p-5" onSubmit={handleSubmit}>
       <Input
         label="Timezone"
         name="timezone"
@@ -66,20 +67,15 @@ function WorkspaceSettingsFields({
         placeholder="Asia/Calcutta"
         value={timezone}
       />
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium" htmlFor="defaultRole">
-          Default invitation role
-        </label>
-        <select
-          className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus:border-primary"
-          id="defaultRole"
-          onChange={(event) => setDefaultRole(event.target.value as "admin" | "member")}
-          value={defaultRole}
-        >
-          <option value="member">Member</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
+      <Select
+        label="Default invitation role"
+        name="defaultRole"
+        onChange={(event) => setDefaultRole(event.target.value as "admin" | "member")}
+        value={defaultRole}
+      >
+        <option value="member">Member</option>
+        <option value="admin">Admin</option>
+      </Select>
       <Input
         label="Color theme"
         name="colorTheme"

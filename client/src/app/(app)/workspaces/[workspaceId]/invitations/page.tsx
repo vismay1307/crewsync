@@ -9,16 +9,16 @@ export default async function WorkspaceInvitationsPage({
   const { workspaceId } = await params;
 
   return (
-    <main className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+    <main className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
       <section className="space-y-5">
-        <div>
-          <h1 className="text-xl font-semibold">Invitations</h1>
-          <p className="mt-1 text-sm text-muted">Manage pending and historical workspace invites.</p>
+        <div className="cs-page-header">
+          <h1 className="cs-page-title">Invitations</h1>
+          <p className="cs-page-description">Manage pending and historical workspace invites.</p>
         </div>
         <InvitationList workspaceId={workspaceId} />
       </section>
-      <aside className="rounded-lg border border-border bg-card p-5">
-        <h2 className="mb-4 text-base font-semibold">Invite member</h2>
+      <aside className="cs-form-card p-5">
+        <h2 className="mb-4 cs-section-title">Invite member</h2>
         <InvitationForm workspaceId={workspaceId} />
       </aside>
     </main>

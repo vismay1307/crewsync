@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { FiArchive, FiArrowRight, FiRotateCcw, FiTrash2 } from "react-icons/fi";
+import { FiArchive, FiRotateCcw, FiTrash2 } from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   useArchiveProjectMutation,
   useDeleteProjectMutation,
@@ -33,23 +34,23 @@ export function ProjectList({
 
   if (!projectsQuery.data.items.length) {
     return (
-      <div className="rounded-lg border border-border bg-card p-5">
-        <h2 className="text-base font-semibold">
+      <Card className="p-5" variant="empty">
+        <h2 className="cs-section-title">
           {archived ? "No archived projects" : "No projects yet"}
         </h2>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-sm leading-6 text-muted">
           {archived ? "Archived backend projects appear here." : "Create a project to start adding tasks."}
         </p>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="divide-y divide-border rounded-lg border border-border bg-card">
+    <Card variant="list">
       {projectsQuery.data.items.map((project) => (
-        <div className="flex items-center justify-between gap-4 p-4" key={project._id}>
+        <div className="cs-row flex items-center justify-between gap-4 p-4 transition-colors" key={project._id}>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold">
+            <h2 className="truncate text-sm font-semibold text-foreground">
               {project.emoji ? `${project.emoji} ` : ""}
               {project.name}
             </h2>
@@ -84,16 +85,15 @@ export function ProjectList({
             </Button>
             {!archived ? (
               <Link
-                className="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card px-3 text-sm hover:bg-background"
+                className="cs-link-button"
                 href={`/workspaces/${workspaceId}/projects/${project._id}`}
               >
                 Open
-                <FiArrowRight size={15} />
               </Link>
             ) : null}
           </div>
         </div>
       ))}
-    </div>
+    </Card>
   );
 }

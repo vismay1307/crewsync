@@ -59,7 +59,7 @@ export function LabelForm({ workspaceId }: { workspaceId: string }) {
         </label>
         <div className="flex gap-3">
           <input
-            className="h-10 w-14 rounded-md border border-border bg-card p-1"
+            className="h-10 w-14 rounded-md border border-border bg-surface-inset p-1"
             id="labelColor"
             onChange={(event) => setColor(event.target.value)}
             type="color"
@@ -67,7 +67,7 @@ export function LabelForm({ workspaceId }: { workspaceId: string }) {
           />
           <input
             aria-label="Color hex value"
-            className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
+            className="h-10 w-full rounded-md border border-border bg-surface-inset px-3 text-sm text-foreground outline-none transition-all hover:border-border-strong focus:border-primary focus:ring-2 focus:ring-primary/20"
             maxLength={7}
             name="color"
             onChange={(event) => setColor(event.target.value)}

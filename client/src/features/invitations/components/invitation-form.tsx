@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { useCreateInvitationMutation } from "@/features/invitations/hooks/use-invitation-queries";
 import { ApiError } from "@/lib/api/client";
 import type { WorkspaceRole } from "@/types/entities";
@@ -39,20 +40,15 @@ export function InvitationForm({ workspaceId }: { workspaceId: string }) {
         type="email"
         value={email}
       />
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium" htmlFor="invitationRole">
-          Role
-        </label>
-        <select
-          className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus:border-primary"
-          id="invitationRole"
-          onChange={(event) => setRole(event.target.value as Exclude<WorkspaceRole, "owner">)}
-          value={role}
-        >
-          <option value="member">Member</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
+      <Select
+        label="Role"
+        name="invitationRole"
+        onChange={(event) => setRole(event.target.value as Exclude<WorkspaceRole, "owner">)}
+        value={role}
+      >
+        <option value="member">Member</option>
+        <option value="admin">Admin</option>
+      </Select>
       {apiError ? <p className="text-sm text-destructive">{apiError}</p> : null}
       <Button disabled={!canSubmit} type="submit">
         {createMutation.isPending ? "Sending" : "Send invitation"}

@@ -3,6 +3,7 @@
 import { FiRefreshCw, FiX } from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   useInvitationActionMutations,
   useInvitationsQuery,
@@ -22,23 +23,23 @@ export function InvitationList({ workspaceId }: { workspaceId: string }) {
 
   if (!invitationsQuery.data.items.length) {
     return (
-      <div className="rounded-lg border border-border bg-card p-5">
-        <h2 className="text-base font-semibold">No invitations</h2>
-        <p className="mt-1 text-sm text-muted">Sent workspace invitations appear here.</p>
-      </div>
+      <Card className="p-5" variant="empty">
+        <h2 className="cs-section-title">No invitations</h2>
+        <p className="mt-1 text-sm leading-6 text-muted">Sent workspace invitations appear here.</p>
+      </Card>
     );
   }
 
   return (
-    <div className="divide-y divide-border rounded-lg border border-border bg-card">
+    <Card variant="list">
       {invitationsQuery.data.items.map((invitation) => (
-        <div className="grid gap-3 p-4 md:grid-cols-[minmax(0,1fr)_120px_120px_120px]" key={invitation._id}>
+        <div className="cs-row grid gap-3 p-4 transition-colors md:grid-cols-[minmax(0,1fr)_120px_120px_120px]" key={invitation._id}>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold">{invitation.email}</h2>
+            <h2 className="truncate text-sm font-semibold text-foreground">{invitation.email}</h2>
             <p className="mt-1 text-sm text-muted">Expires {new Date(invitation.expiresAt).toLocaleDateString()}</p>
           </div>
-          <span className="text-sm text-muted">{invitation.role}</span>
-          <span className="text-sm text-muted">{invitation.status}</span>
+          <span className="cs-meta-pill justify-center">{invitation.role}</span>
+          <span className="cs-meta-pill justify-center">{invitation.status}</span>
           <div className="flex items-center gap-2">
             <Button
               disabled={actions.resend.isPending || invitation.status !== "pending"}
@@ -57,6 +58,6 @@ export function InvitationList({ workspaceId }: { workspaceId: string }) {
           </div>
         </div>
       ))}
-    </div>
+    </Card>
   );
 }
