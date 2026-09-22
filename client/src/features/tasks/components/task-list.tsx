@@ -63,7 +63,7 @@ export function TaskList({
       {tasksQuery.data.items.map((task) => (
         <div className="cs-row grid gap-3 p-4 transition-colors lg:grid-cols-[minmax(0,1fr)_120px_120px_180px] lg:items-center" key={task._id}>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold text-foreground">{task.title}</h2>
+            <h2 className="truncate text-sm font-medium text-foreground">{task.title}</h2>
             <p className="mt-1 line-clamp-2 text-sm text-muted">
               {task.description || "No description"}
             </p>

@@ -35,7 +35,7 @@ export function InvitationList({ workspaceId }: { workspaceId: string }) {
       {invitationsQuery.data.items.map((invitation) => (
         <div className="cs-row grid gap-3 p-4 transition-colors md:grid-cols-[minmax(0,1fr)_120px_120px_120px]" key={invitation._id}>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold text-foreground">{invitation.email}</h2>
+            <h2 className="truncate text-sm font-medium text-foreground">{invitation.email}</h2>
             <p className="mt-1 text-sm text-muted">Expires {new Date(invitation.expiresAt).toLocaleDateString()}</p>
           </div>
           <span className="cs-meta-pill justify-center">{invitation.role}</span>

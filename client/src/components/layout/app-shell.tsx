@@ -9,14 +9,17 @@ import {
   FiGrid,
   FiLogOut,
   FiMenu,
+  FiMoon,
   FiSend,
   FiSettings,
+  FiSun,
   FiTag,
 } from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useLogoutMutation } from "@/features/auth/hooks/use-auth-mutations";
+import { useTheme } from "@/providers/theme-provider";
 import { useWorkspacesQuery } from "@/features/workspaces/hooks/use-workspace-queries";
 import { setActiveWorkspaceId, setSidebarCollapsed } from "@/store/ui-slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -28,6 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const sidebarCollapsed = useAppSelector((state) => state.ui.sidebarCollapsed);
   const activeWorkspaceId = useAppSelector((state) => state.ui.activeWorkspaceId);
   const currentUser = useAppSelector((state) => state.auth.currentUser);
+  const { setTheme, theme } = useTheme();
   const logoutMutation = useLogoutMutation();
   const workspacesQuery = useWorkspacesQuery();
   const navItems = [
@@ -81,7 +85,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       >
         <div className="flex h-16 items-center justify-between border-b border-border px-4">
           {!sidebarCollapsed ? (
-            <Link className="flex items-center gap-3 text-sm font-semibold tracking-normal" href="/dashboard">
+            <Link className="flex items-center gap-3 text-sm font-bold tracking-normal" href="/dashboard">
               <span className="grid h-8 w-8 place-items-center rounded-md border border-primary/30 bg-primary/12 text-primary">
                 C
               </span>
@@ -123,7 +127,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className={sidebarCollapsed ? "md:pl-16" : "md:pl-64"}>
         <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-background/90 px-5 backdrop-blur sm:px-8">
           <div className="flex items-center gap-3">
-            <Link className="text-sm font-semibold md:hidden" href="/dashboard">
+            <Link className="text-sm font-bold md:hidden" href="/dashboard">
               CrewSync
             </Link>
             <Select
@@ -143,6 +147,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="hidden text-sm text-muted sm:inline">
               {currentUser?.firstName} {currentUser?.lastName}
             </span>
+            <Button
+              aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+              className="h-9 w-9 px-0"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              variant="ghost"
+            >
+              {theme === "dark" ? <FiSun size={16} /> : <FiMoon size={16} />}
+            </Button>
             <Button
               aria-label="Logout"
               disabled={logoutMutation.isPending}

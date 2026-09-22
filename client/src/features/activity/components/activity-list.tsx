@@ -35,7 +35,7 @@ export function ActivityList({ workspaceId }: { workspaceId: string }) {
         <article className="cs-row grid gap-2 p-4 transition-colors md:grid-cols-[180px_minmax(0,1fr)_180px]" key={entry._id}>
           <p className="text-sm font-medium">{actorName(entry.actor)}</p>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold text-foreground">{entry.action}</h2>
+            <h2 className="truncate text-sm font-medium text-foreground">{entry.action}</h2>
             <p className="mt-1 text-sm text-muted">{entry.resourceType}</p>
           </div>
           <time className="text-sm text-muted" dateTime={entry.createdAt}>

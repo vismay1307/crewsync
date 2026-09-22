@@ -44,7 +44,7 @@ export function LabelList({ workspaceId }: { workspaceId: string }) {
                 className="h-3 w-3 rounded-full border border-border-strong"
                 style={{ backgroundColor: label.color }}
               />
-              <h2 className="truncate text-sm font-semibold text-foreground">{label.name}</h2>
+              <h2 className="truncate text-sm font-medium text-foreground">{label.name}</h2>
             </div>
             <p className="mt-1 line-clamp-2 text-sm text-muted">
               {label.description || label.color}

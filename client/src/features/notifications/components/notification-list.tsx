@@ -54,7 +54,7 @@ export function NotificationList() {
         {notificationsQuery.data.items.map((notification) => (
           <article className="cs-row flex items-center justify-between gap-4 p-4 transition-colors" key={notification._id}>
             <div className="min-w-0">
-              <h2 className="truncate text-sm font-semibold text-foreground">{notification.type}</h2>
+              <h2 className="truncate text-sm font-medium text-foreground">{notification.type}</h2>
               <p className="mt-1 text-sm text-muted">
                 {actorName(notification.actor)}
                 {workspaceName(notification.workspace) ? ` in ${workspaceName(notification.workspace)}` : ""}

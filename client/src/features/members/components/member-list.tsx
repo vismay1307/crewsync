@@ -48,7 +48,7 @@ export function MemberList({ workspaceId }: { workspaceId: string }) {
       {membersQuery.data.items.map((member) => (
         <div className="cs-row grid gap-3 p-4 transition-colors sm:grid-cols-[minmax(0,1fr)_160px_110px] sm:items-center" key={member._id}>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold text-foreground">{userName(member.user)}</h2>
+            <h2 className="truncate text-sm font-medium text-foreground">{userName(member.user)}</h2>
             <p className="mt-1 truncate text-sm text-muted">{userEmail(member.user)}</p>
           </div>
           <Select

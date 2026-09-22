@@ -50,7 +50,7 @@ export function ProjectList({
       {projectsQuery.data.items.map((project) => (
         <div className="cs-row flex items-center justify-between gap-4 p-4 transition-colors" key={project._id}>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold text-foreground">
+            <h2 className="truncate text-sm font-medium text-foreground">
               {project.emoji ? `${project.emoji} ` : ""}
               {project.name}
             </h2>

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Provider as ReduxProvider } from "react-redux";
 
 import { AuthProvider } from "@/providers/auth-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 import { store } from "@/store/store";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
@@ -24,10 +25,12 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <ReduxProvider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>{children}</AuthProvider>
-      </QueryClientProvider>
-    </ReduxProvider>
+    <ThemeProvider>
+      <ReduxProvider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>{children}</AuthProvider>
+        </QueryClientProvider>
+      </ReduxProvider>
+    </ThemeProvider>
   );
 }

@@ -1,15 +1,47 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useSyncExternalStore } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCreateLabelMutation } from "@/features/labels/hooks/use-label-queries";
 import { ApiError } from "@/lib/api/client";
 
+function themeColor(name: string) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function getPrimaryColorSnapshot() {
+  if (typeof document === "undefined") return "";
+
+  return themeColor("--primary");
+}
+
+function getServerPrimaryColorSnapshot() {
+  return "";
+}
+
+function subscribePrimaryColor(listener: () => void) {
+  if (typeof document === "undefined") return () => {};
+
+  const observer = new MutationObserver(listener);
+  observer.observe(document.documentElement, {
+    attributeFilter: ["class"],
+    attributes: true,
+  });
+
+  return () => observer.disconnect();
+}
+
 export function LabelForm({ workspaceId }: { workspaceId: string }) {
   const [name, setName] = useState("");
-  const [color, setColor] = useState("#64748b");
+  const primaryColor = useSyncExternalStore(
+    subscribePrimaryColor,
+    getPrimaryColorSnapshot,
+    getServerPrimaryColorSnapshot
+  );
+  const [customColor, setCustomColor] = useState<string | null>(null);
+  const color = customColor ?? primaryColor;
   const [description, setDescription] = useState("");
   const createMutation = useCreateLabelMutation(workspaceId);
   const canSubmit =
@@ -32,7 +64,7 @@ export function LabelForm({ workspaceId }: { workspaceId: string }) {
       {
         onSuccess: () => {
           setName("");
-          setColor("#64748b");
+          setCustomColor(null);
           setDescription("");
         },
       }
@@ -60,8 +92,9 @@ export function LabelForm({ workspaceId }: { workspaceId: string }) {
         <div className="flex gap-3">
           <input
             className="h-10 w-14 rounded-md border border-border bg-surface-inset p-1"
+            disabled={!color}
             id="labelColor"
-            onChange={(event) => setColor(event.target.value)}
+            onChange={(event) => setCustomColor(event.target.value)}
             type="color"
             value={color}
           />
@@ -70,7 +103,7 @@ export function LabelForm({ workspaceId }: { workspaceId: string }) {
             className="h-10 w-full rounded-md border border-border bg-surface-inset px-3 text-sm text-foreground outline-none transition-all hover:border-border-strong focus:border-primary focus:ring-2 focus:ring-primary/20"
             maxLength={7}
             name="color"
-            onChange={(event) => setColor(event.target.value)}
+            onChange={(event) => setCustomColor(event.target.value)}
             value={color}
           />
         </div>

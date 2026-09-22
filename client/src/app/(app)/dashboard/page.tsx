@@ -55,7 +55,7 @@ export default function DashboardPage() {
                 key={workspace._id}
               >
                 <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold text-foreground">{workspace.name}</h3>
+                  <h3 className="truncate text-sm font-medium text-foreground">{workspace.name}</h3>
                   <p className="mt-1 truncate text-sm text-muted">
                     {workspace.description || workspace.visibility || "Workspace"}
                   </p>

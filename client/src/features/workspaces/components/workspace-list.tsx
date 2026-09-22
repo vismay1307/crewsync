@@ -36,7 +36,7 @@ export function WorkspaceList() {
       {workspacesQuery.data.map((workspace) => (
         <div className="cs-row flex items-center justify-between gap-4 p-4 transition-colors" key={workspace._id}>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold text-foreground">{workspace.name}</h2>
+            <h2 className="truncate text-sm font-medium text-foreground">{workspace.name}</h2>
             <p className="mt-1 line-clamp-2 text-sm text-muted">
               {workspace.description || "No description"}
             </p>

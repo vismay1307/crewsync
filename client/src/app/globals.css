@@ -1,24 +1,44 @@
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
 
-:root {
+:root,
+.dark {
   color-scheme: dark;
-  --background: #081315;
-  --foreground: #f4efe7;
-  --surface: #0d1c1f;
-  --surface-raised: #13282c;
-  --surface-inset: #091719;
-  --surface-highlight: #183236;
-  --card: #102225;
-  --border: #254044;
-  --border-strong: #3a666c;
-  --muted: #90a6a7;
-  --primary: #42d9c8;
-  --primary-foreground: #031313;
-  --accent: #ffb454;
+  --background: #05090b;
+  --foreground: #f5f8f9;
+  --surface: #0b1518;
+  --surface-raised: #101e22;
+  --surface-inset: #081113;
+  --surface-highlight: #16282c;
+  --card: #0d1a1d;
+  --border: #1e3238;
+  --border-strong: #2f4d54;
+  --muted: #8fa3a8;
+  --primary: #1b6e93;
+  --primary-foreground: #f5f8f9;
+  --secondary: #2fbfae;
+  --tertiary: #6fb8d9;
   --destructive: #ff6f61;
   --success: #73d99f;
   --warning: #ffc857;
+}
+
+.light {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #0a0f11;
+  --surface: #f5f8f9;
+  --surface-raised: #ecf2f3;
+  --surface-inset: #eef3f4;
+  --surface-highlight: #e2eced;
+  --card: #ffffff;
+  --border: #d8e2e4;
+  --border-strong: #b9c9cc;
+  --muted: #5c6c70;
+  --primary: #1b6e93;
+  --primary-foreground: #f5f8f9;
+  --secondary: #17a398;
+  --tertiary: #4fa8cc;
 }
 
 @theme inline {
@@ -34,12 +54,12 @@
   --color-muted: var(--muted);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-accent: var(--accent);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
   --color-destructive: var(--destructive);
   --color-success: var(--success);
   --color-warning: var(--warning);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-roboto);
 }
 
 * {
@@ -49,7 +69,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Inter, Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   margin: 0;
   text-rendering: geometricPrecision;
 }
@@ -73,7 +93,7 @@ body {
 .cs-page-title {
   color: var(--foreground);
   font-size: 1.75rem;
-  font-weight: 650;
+  font-weight: 700;
   letter-spacing: 0;
   line-height: 2.15rem;
 }
@@ -87,14 +107,14 @@ body {
 .cs-section-title {
   color: var(--foreground);
   font-size: 1.0625rem;
-  font-weight: 650;
+  font-weight: 700;
   letter-spacing: 0;
   line-height: 1.6rem;
 }
 
 .cs-card {
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--surface-raised) 88%, white 2%), var(--card));
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-raised) 88%, var(--foreground) 2%), var(--card));
   border: 1px solid var(--border);
   border-radius: 0.5rem;
 }
@@ -151,7 +171,7 @@ body {
   color: var(--foreground);
   display: inline-flex;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   gap: 0.5rem;
   height: 2.25rem;
   justify-content: center;
@@ -160,7 +180,7 @@ body {
 }
 
 .cs-link-button:hover {
-  background: var(--surface-highlight);
+  background: color-mix(in srgb, var(--secondary) 12%, var(--surface-highlight));
   border-color: var(--border-strong);
 }
 
@@ -179,12 +199,12 @@ body {
 
 .cs-textarea:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tertiary) 24%, transparent);
 }
 
 .cs-meta-pill {
   align-items: center;
-  background: color-mix(in srgb, var(--surface-highlight) 68%, transparent);
+  background: color-mix(in srgb, var(--secondary) 10%, var(--surface-highlight));
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--muted);
