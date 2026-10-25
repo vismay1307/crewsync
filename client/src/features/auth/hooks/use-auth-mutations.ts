@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,7 +16,7 @@ import {
 } from "@/store/auth-slice";
 import { useAppDispatch } from "@/store/hooks";
 
-export function   useLoginMutation() {
+export function useLoginMutation(returnTo = "/dashboard") {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -25,18 +26,29 @@ export function   useLoginMutation() {
     onSuccess: ({ user }) => {
       queryClient.setQueryData(currentUserQueryKey, user);
       dispatch(authAuthenticated(user));
-      router.replace("/dashboard");
+
+      const safeReturnTo =
+        returnTo.startsWith("/") && !returnTo.startsWith("//")
+          ? returnTo
+          : "/dashboard";
+
+      router.replace(safeReturnTo);
     },
   });
 }
 
-export function useSignupMutation() {
+export function useSignupMutation(returnTo = "/login") {
   const router = useRouter();
 
   return useMutation({
     mutationFn: (data: SignupRequest) => authService.signup(data),
     onSuccess: () => {
-      router.replace("/login");
+      const safeReturnTo =
+        returnTo.startsWith("/") && !returnTo.startsWith("//")
+          ? returnTo
+          : "/login";
+
+      router.replace(safeReturnTo);
     },
   });
 }

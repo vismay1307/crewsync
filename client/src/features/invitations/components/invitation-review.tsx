@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
+import { useEffect } from "react";
+import { useAppSelector } from "@/store/hooks";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -22,10 +23,25 @@ function invitedByName(user: string | User) {
 
 export function InvitationReview({ token }: { token: string }) {
   const router = useRouter();
+  const authStatus = useAppSelector((state) => state.auth.status);
+const returnTo = `/invitations/${encodeURIComponent(token)}`;
   const previewQuery = useInvitationPreviewQuery(token);
   const acceptMutation = useAcceptInvitationMutation(token);
   const rejectMutation = useRejectInvitationMutation(token);
+useEffect(() => {
+  if (authStatus === "unauthenticated") {
+    router.replace(
+      `/signup?returnTo=${encodeURIComponent(returnTo)}`,
+    );
+  }
+}, [authStatus, returnTo, router]);
+if (authStatus === "idle" || authStatus === "loading") {
+  return <p className="text-sm text-muted">Checking your account...</p>;
+}
 
+if (authStatus === "unauthenticated") {
+  return <p className="text-sm text-muted">Redirecting to sign up...</p>;
+}
   if (previewQuery.isPending) {
     return <p className="text-sm text-muted">Loading invitation</p>;
   }

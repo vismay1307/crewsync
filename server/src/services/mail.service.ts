@@ -30,3 +30,7 @@ export const sendMail = async ({
     html,
   });
 };
+
+export const verifyMailConnection = async () => {
+  await transporter.verify();
+};

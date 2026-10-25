@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AuthCard } from "@/features/auth/components/auth-card";
@@ -15,12 +15,17 @@ type SignupErrors = Partial<
 >;
 
 export function SignupForm() {
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo") ?? "/login";
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const signupMutation = useSignupMutation();
+  const signupMutation = useSignupMutation(
+  `/login?returnTo=${encodeURIComponent(returnTo)}`,
+);
 
   const errors = useMemo<SignupErrors>(() => {
     const nextErrors: SignupErrors = {};
@@ -139,7 +144,10 @@ export function SignupForm() {
       </form>
       <p className="mt-5 text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link className="font-medium text-primary hover:underline" href="/login">
+        <Link
+  className="font-medium text-primary hover:underline"
+  href={`/login?returnTo=${encodeURIComponent(returnTo)}`}
+>
           Log in
         </Link>
       </p>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 import { ApiError } from "@/lib/api/client";
@@ -13,10 +14,13 @@ import { useLoginMutation } from "@/features/auth/hooks/use-auth-mutations";
 type LoginErrors = Partial<Record<"email" | "password", string>>;
 
 export function LoginForm() {
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo") ?? "/dashboard";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const loginMutation = useLoginMutation();
+  const loginMutation = useLoginMutation(returnTo);
 
   const errors = useMemo<LoginErrors>(() => {
     const nextErrors: LoginErrors = {};
@@ -94,7 +98,10 @@ export function LoginForm() {
       </form>
       <p className="mt-5 text-center text-sm text-muted">
         Need an account?{" "}
-        <Link className="font-medium text-primary hover:underline" href="/signup">
+        <Link
+  className="font-medium text-primary hover:underline"
+  href={`/signup?returnTo=${encodeURIComponent(returnTo)}`}
+>
           Sign up
         </Link>
       </p>
