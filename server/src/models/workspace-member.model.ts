@@ -75,6 +75,9 @@ workspaceMemberSchema.index(
   },
   {
     unique: true,
+    partialFilterExpression: {
+      isDeleted: false,
+    },
   }
 );
 

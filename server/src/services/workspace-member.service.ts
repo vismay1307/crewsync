@@ -7,75 +7,96 @@ import User from "../models/user.models.js";
 import ApiError from "../utils/ApiError.js";
 import { buildPaginationMeta, getPagination } from "../utils/pagination.js";
 import { getSort } from "../utils/sorting.js";
-
+import { WorkspaceInvitation } from "../models/workspace-invitation.model.js";
 import {
   AddWorkspaceMemberInput,
   UpdateWorkspaceMemberInput,
 } from "../validators/workspace-member.validator.js";
+
 
 export const addWorkspaceMember = async (
   workspaceId: Types.ObjectId,
   ownerId: Types.ObjectId,
   data: AddWorkspaceMemberInput
 ) => {
-  // Check workspace exists and belongs to owner
   const workspace = await Workspace.findOne({
     _id: workspaceId,
     isDeleted: false,
   });
 
   if (!workspace) {
-    throw new ApiError(404, "Workspace not found");
+    throw new ApiError(404, "Workspace not found.");
   }
 
-  // Find user by email
-  const user = await User.findOne({
-    email: data.email,
-  });
+  const email = data.email.trim().toLowerCase();
+
+  const user = await User.findOne({ email });
 
   if (!user) {
-    throw new ApiError(404, "User not found");
-  }
-
-  // Prevent owner from adding himself again
-  if (user._id.equals(ownerId)) {
     throw new ApiError(
-      409,
-      "Owner is already a member of this workspace."
+      404,
+      "No registered user found with this email. Invite them to CrewSync first."
     );
   }
 
-  // Check existing membership
+  if (user._id.equals(ownerId)) {
+    throw new ApiError(
+      409,
+      "The workspace owner is already a member."
+    );
+  }
+
+  const invitation = await WorkspaceInvitation.findOne({
+    workspace: workspaceId,
+    email,
+    status: "accepted",
+    invitedUser: user._id,
+  });
+
+  if (!invitation) {
+    const pendingInvitation = await WorkspaceInvitation.findOne({
+      workspace: workspaceId,
+      email,
+      status: "pending",
+      expiresAt: { $gt: new Date() },
+    });
+
+    if (pendingInvitation) {
+      throw new ApiError(
+        409,
+        "This user has not accepted the workspace invitation yet."
+      );
+    }
+
+    throw new ApiError(
+      404,
+      "This user has not been invited to this workspace. Please send an invitation first."
+    );
+  }
+
   const existingMember = await WorkspaceMember.findOne({
     workspace: workspaceId,
     user: user._id,
     isDeleted: false,
-  });
+  }).populate("user", "firstName lastName email avatar");
 
-  if (existingMember) {
+  if (!existingMember) {
     throw new ApiError(
       409,
-      "User is already a member of this workspace."
+      "The invitation is accepted, but the membership record is missing. Please review the invitation acceptance flow."
     );
   }
 
-  // Create membership
-  const workspaceMember =
-    await WorkspaceMember.create({
-      workspace: workspaceId,
-      user: user._id,
-      role: data.role,
-      status: "accepted",
-      invitedBy: ownerId,
-    });
+  if (existingMember.status !== "accepted") {
+    throw new ApiError(
+      409,
+      "This user's workspace membership has not been accepted."
+    );
+  }
 
-  await workspaceMember.populate(
-    "user",
-    "firstName lastName email avatar"
-  );
-
-  return workspaceMember;
+  return existingMember;
 };
+
 
 export const getWorkspaceMembers = async (
   workspaceId: Types.ObjectId,

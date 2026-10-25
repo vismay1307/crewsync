@@ -27,6 +27,9 @@ const authorizeWorkspace = (
           "Workspace ID is required."
         );
       }
+      if (!Types.ObjectId.isValid(workspaceId)) {
+  throw new ApiError(400, "Invalid workspace ID.");
+}
 
       const workspace = await Workspace.findOne({
         _id: new Types.ObjectId(workspaceId),
@@ -46,12 +49,12 @@ const authorizeWorkspace = (
         isDeleted: false,
       });
 
-      if (!member) {
-        throw new ApiError(
-          403,
-          "You are not a member of this workspace."
-        );
-      }
+     if (!member || member.status !== "accepted") {
+  throw new ApiError(
+    403,
+    "You are not an accepted member of this workspace."
+  );
+}
 
       if (!allowedRoles.includes(member.role)) {
         throw new ApiError(

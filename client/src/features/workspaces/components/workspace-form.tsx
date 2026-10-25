@@ -1,3 +1,4 @@
+
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
@@ -21,18 +22,30 @@ export function WorkspaceForm({
   workspace?: Workspace;
 }) {
   const [name, setName] = useState(workspace?.name ?? "");
-  const [description, setDescription] = useState(workspace?.description ?? "");
-  const [visibility, setVisibility] = useState<"private" | "public">(
-    workspace?.visibility ?? "private"
+  const [description, setDescription] = useState(
+    workspace?.description ?? "",
   );
+  const [visibility, setVisibility] = useState<"private" | "public">(
+    workspace?.visibility ?? "public",
+  );
+
   const createMutation = useCreateWorkspaceMutation();
   const updateMutation = useUpdateWorkspaceMutation(workspace?._id ?? "");
-  const mutation = mode === "create" ? createMutation : updateMutation;
+
+  const mutation =
+    mode === "create" ? createMutation : updateMutation;
 
   const nameError = useMemo(() => {
     if (!name) return undefined;
-    if (name.trim().length < 3) return "Workspace name must be at least 3 characters.";
-    if (name.trim().length > 100) return "Workspace name cannot exceed 100 characters.";
+
+    if (name.trim().length < 3) {
+      return "Workspace name must be at least 3 characters.";
+    }
+
+    if (name.trim().length > 100) {
+      return "Workspace name cannot exceed 100 characters.";
+    }
+
     return undefined;
   }, [name]);
 
@@ -47,15 +60,31 @@ export function WorkspaceForm({
 
     if (!canSubmit) return;
 
-    mutation.mutate({
-      name,
-      description: description || undefined,
+    const data = {
+      name: name.trim(),
+      description: description.trim() || undefined,
       visibility,
-    });
+    };
+
+    if (mode === "create") {
+      createMutation.mutate(data, {
+        onSuccess: () => {
+          setName("");
+          setDescription("");
+          setVisibility("public");
+        },
+      });
+
+      return;
+    }
+
+    updateMutation.mutate(data);
   }
 
   const apiError =
-    mutation.error instanceof ApiError ? mutation.error.message : mutation.error?.message;
+    mutation.error instanceof ApiError
+      ? mutation.error.message
+      : mutation.error?.message;
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
@@ -66,6 +95,7 @@ export function WorkspaceForm({
         onChange={(event) => setName(event.target.value)}
         value={name}
       />
+
       <Textarea
         className="min-h-24"
         label="Description"
@@ -74,16 +104,25 @@ export function WorkspaceForm({
         onChange={(event) => setDescription(event.target.value)}
         value={description}
       />
+
       <Select
         label="Visibility"
         name="workspaceVisibility"
-        onChange={(event) => setVisibility(event.target.value as "private" | "public")}
+        onChange={(event) =>
+          setVisibility(
+            event.target.value as "private" | "public",
+          )
+        }
         value={visibility}
       >
         <option value="private">Private</option>
         <option value="public">Public</option>
       </Select>
-      {apiError ? <p className="text-sm text-destructive">{apiError}</p> : null}
+
+      {apiError ? (
+        <p className="text-sm text-destructive">{apiError}</p>
+      ) : null}
+
       <Button disabled={!canSubmit} type="submit">
         {mutation.isPending
           ? mode === "create"

@@ -169,6 +169,7 @@ export const previewWorkspaceInvitation = async (token: string) => {
   return sanitizeInvitation(invitation);
 };
 
+
 export const acceptWorkspaceInvitation = async (
   token: string,
   userId: Types.ObjectId
@@ -177,46 +178,85 @@ export const acceptWorkspaceInvitation = async (
   const user = await User.findById(userId);
 
   if (!user) {
-    throw new ApiError(404, "User not found");
+    throw new ApiError(404, "User not found.");
   }
 
-  if (user.email.toLowerCase() !== invitation.email) {
-    throw new ApiError(403, "This invitation belongs to another email.");
+  if (user.email.trim().toLowerCase() !== invitation.email) {
+    throw new ApiError(
+      403,
+      "This invitation belongs to another email."
+    );
   }
 
   const session = await mongoose.startSession();
-  session.startTransaction();
 
   try {
-    const existingMember = await WorkspaceMember.findOne({
-      workspace: invitation.workspace,
-      user: userId,
-      isDeleted: false,
-    }).session(session);
+    let acceptedMember: any = null;
 
-    if (existingMember) {
-      throw new ApiError(409, "Already member");
-    }
+    await session.withTransaction(async () => {
+      const now = new Date();
 
-    const [member] = await WorkspaceMember.create(
-      [
-        {
-          workspace: invitation.workspace,
-          user: userId,
-          role: invitation.role,
-          status: "accepted",
-          invitedBy: invitation.invitedBy,
-        },
-      ],
-      { session }
-    );
+      const claimedInvitation =
+        await WorkspaceInvitation.findOneAndUpdate(
+          {
+            _id: invitation._id,
+            tokenHash: hashToken(token),
+            status: "pending",
+            expiresAt: { $gt: now },
+          },
+          {
+            $set: {
+              status: "accepted",
+              acceptedAt: now,
+              invitedUser: userId,
+            },
+          },
+          {
+            new: true,
+            session,
+          }
+        );
 
-    invitation.status = "accepted";
-    invitation.acceptedAt = new Date();
-    invitation.invitedUser = userId;
-    await invitation.save({ session });
+      if (!claimedInvitation) {
+        throw new ApiError(
+          409,
+          "This invitation has already been used, cancelled, or expired."
+        );
+      }
 
-    await session.commitTransaction();
+      const existingMember = await WorkspaceMember.findOne({
+        workspace: claimedInvitation.workspace,
+        user: userId,
+        isDeleted: false,
+      }).session(session);
+      if (existingMember && existingMember.status === "accepted") {
+  throw new ApiError(
+    409,
+    "You are already a member of this workspace."
+  );
+}
+      if (existingMember) {
+  throw new ApiError(
+    409,
+    "A membership record already exists for this workspace."
+  );
+}
+
+      const [member] = await WorkspaceMember.create(
+        [
+          {
+            workspace: claimedInvitation.workspace,
+            user: userId,
+            role: claimedInvitation.role,
+            status: "accepted",
+            invitedBy: claimedInvitation.invitedBy,
+          },
+        ],
+        { session }
+      );
+
+      acceptedMember = member;
+    });
 
     await createActivity({
       workspace: invitation.workspace,
@@ -224,7 +264,10 @@ export const acceptWorkspaceInvitation = async (
       action: "invitation.accepted",
       resourceType: "WorkspaceInvitation",
       resourceId: invitation._id,
-      metadata: { email: invitation.email, role: invitation.role },
+      metadata: {
+        email: invitation.email,
+        role: invitation.role,
+      },
     });
 
     await createNotification({
@@ -237,14 +280,15 @@ export const acceptWorkspaceInvitation = async (
       metadata: { email: invitation.email },
     });
 
-    return member.populate("user", "firstName lastName email avatar");
-  } catch (error) {
-    await session.abortTransaction();
-    throw error;
+    return acceptedMember.populate(
+      "user",
+      "firstName lastName email avatar"
+    );
   } finally {
     await session.endSession();
   }
 };
+
 
 export const rejectWorkspaceInvitation = async (
   token: string,

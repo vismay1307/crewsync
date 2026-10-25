@@ -1,6 +1,7 @@
+
 "use client";
 
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,13 +23,27 @@ export function ProjectForm({
   workspaceId: string;
 }) {
   const [name, setName] = useState(project?.name ?? "");
-  const [description, setDescription] = useState(project?.description ?? "");
+  const [description, setDescription] = useState(
+    project?.description ?? "",
+  );
   const [emoji, setEmoji] = useState(project?.emoji ?? "");
+
   const createMutation = useCreateProjectMutation(workspaceId);
-  const updateMutation = useUpdateProjectMutation(workspaceId, project?._id ?? "");
-  const mutation = mode === "create" ? createMutation : updateMutation;
+  const updateMutation = useUpdateProjectMutation(
+    workspaceId,
+    project?._id ?? "",
+  );
+
+  const mutation =
+    mode === "create" ? createMutation : updateMutation;
+
   const nameError =
-    name && name.trim().length < 3 ? "Project name must be at least 3 characters." : undefined;
+    name && name.trim().length < 3
+      ? "Project name must be at least 3 characters."
+      : name.trim().length > 100
+        ? "Project name cannot exceed 100 characters."
+        : undefined;
+
   const canSubmit =
     name.trim().length >= 3 &&
     name.trim().length <= 100 &&
@@ -37,16 +52,34 @@ export function ProjectForm({
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
     if (!canSubmit) return;
-    mutation.mutate({
-      name,
-      description: description || undefined,
-      emoji: emoji || undefined,
-    });
+
+    const data = {
+      name: name.trim(),
+      description: description.trim() || undefined,
+      emoji: emoji.trim() || undefined,
+    };
+
+    if (mode === "create") {
+      createMutation.mutate(data, {
+        onSuccess: () => {
+          setName("");
+          setDescription("");
+          setEmoji("");
+        },
+      });
+
+      return;
+    }
+
+    updateMutation.mutate(data);
   }
 
   const apiError =
-    mutation.error instanceof ApiError ? mutation.error.message : mutation.error?.message;
+    mutation.error instanceof ApiError
+      ? mutation.error.message
+      : mutation.error?.message;
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
@@ -57,12 +90,14 @@ export function ProjectForm({
         onChange={(event) => setName(event.target.value)}
         value={name}
       />
+
       <Input
         label="Emoji"
         name="emoji"
         onChange={(event) => setEmoji(event.target.value)}
         value={emoji}
       />
+
       <Textarea
         className="min-h-24"
         label="Description"
@@ -71,7 +106,11 @@ export function ProjectForm({
         onChange={(event) => setDescription(event.target.value)}
         value={description}
       />
-      {apiError ? <p className="text-sm text-destructive">{apiError}</p> : null}
+
+      {apiError ? (
+        <p className="text-sm text-destructive">{apiError}</p>
+      ) : null}
+
       <Button disabled={!canSubmit} type="submit">
         {mutation.isPending
           ? mode === "create"

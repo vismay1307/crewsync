@@ -1,6 +1,6 @@
+
 import "./globals.css";
 import { Roboto } from "next/font/google";
-import Script from "next/script";
 
 import { AppProviders } from "@/providers/app-providers";
 
@@ -11,16 +11,17 @@ const roboto = Roboto({
 });
 
 const themeScript = `
-  (function () {
-    try {
-      var storedTheme = window.localStorage.getItem("crewsync-theme");
-      var theme = storedTheme === "light" ? "light" : "dark";
-      var root = document.documentElement;
-      root.classList.remove("light", "dark");
-      root.classList.add(theme);
-      root.style.colorScheme = theme;
-    } catch (_) {}
-  })();
+(function () {
+  try {
+    var storedTheme = localStorage.getItem("crewsync-theme");
+    var theme = storedTheme === "light" ? "light" : "dark";
+    var root = document.documentElement;
+
+    root.classList.remove("light", "dark");
+    root.classList.add(theme);
+    root.style.colorScheme = theme;
+  } catch (error) {}
+})();
 `;
 
 export default function RootLayout({
@@ -29,12 +30,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className={`${roboto.variable} dark`} lang="en" suppressHydrationWarning>
-      <Script
-        dangerouslySetInnerHTML={{ __html: themeScript }}
-        id="theme-script"
-        strategy="beforeInteractive"
-      />
+    <html
+      lang="en"
+      className={roboto.variable}
+      suppressHydrationWarning
+    >
+      <head>
+        <script
+          id="theme-script"
+          dangerouslySetInnerHTML={{ __html: themeScript }}
+        />
+      </head>
+
       <body>
         <AppProviders>{children}</AppProviders>
       </body>

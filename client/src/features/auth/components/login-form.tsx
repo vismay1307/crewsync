@@ -55,7 +55,7 @@ export function LoginForm() {
 
   return (
     <AuthCard
-      subtitle="Use your CrewSync account credentials. Authentication is handled by the backend cookie session."
+      subtitle="Use your CrewSync account credentials."
       title="Log in"
     >
       <form className="space-y-4" onSubmit={handleSubmit}>

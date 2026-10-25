@@ -64,11 +64,27 @@ export function useInvitationPreviewQuery(token: string) {
 
 export function useAcceptInvitationMutation(token: string) {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: () => invitationService.accept(token),
+
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: invitationPreviewQueryKey(token) });
-      void queryClient.invalidateQueries({ queryKey: ["workspaces"] });
+      void queryClient.invalidateQueries({
+        queryKey: invitationPreviewQueryKey(token),
+      });
+
+      void queryClient.invalidateQueries({
+        queryKey: ["workspaces"],
+      });
+
+      // Refresh workspace member lists after acceptance.
+      void queryClient.invalidateQueries({
+        queryKey: ["members"],
+      });
+
+      void queryClient.invalidateQueries({
+        queryKey: ["invitations"],
+      });
     },
   });
 }
