@@ -53,7 +53,8 @@ export function useSignupMutation(returnTo = "/login") {
   });
 }
 
-export function useLogoutMutation() {
+
+export function useLogoutMutation(returnTo = "/login") {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -63,7 +64,15 @@ export function useLogoutMutation() {
     onSettled: () => {
       queryClient.clear();
       dispatch(authUnauthenticated());
-      router.replace("/login");
+
+      const safeReturnTo =
+        returnTo.startsWith("/") && !returnTo.startsWith("//")
+          ? returnTo
+          : "/login";
+
+      router.replace(
+        `/login?returnTo=${encodeURIComponent(safeReturnTo)}`,
+      );
     },
   });
 }

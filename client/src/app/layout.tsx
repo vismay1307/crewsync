@@ -1,26 +1,44 @@
+import type { Metadata } from "next";
+import { Figtree } from "next/font/google";
 
 import "./globals.css";
-import { Roboto } from "next/font/google";
-
 import { AppProviders } from "@/providers/app-providers";
 
-const roboto = Roboto({
+const figtree = Figtree({
+  display: "swap",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-roboto",
+  variable: "--font-figtree",
 });
 
+export const metadata: Metadata = {
+  title: {
+    default: "CrewSync",
+    template: "%s · CrewSync",
+  },
+  description: "Workspaces, projects, and tasks for your team.",
+};
+
+// Apply the saved theme before the first page paint.
 const themeScript = `
 (function () {
-  try {
-    var storedTheme = localStorage.getItem("crewsync-theme");
-    var theme = storedTheme === "light" ? "light" : "dark";
-    var root = document.documentElement;
+  var root = document.documentElement;
+  var theme = "light";
 
-    root.classList.remove("light", "dark");
-    root.classList.add(theme);
-    root.style.colorScheme = theme;
+  try {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark";
+    }
+
+    var stored = window.localStorage.getItem("crewsync-theme");
+
+    if (stored === "light" || stored === "dark") {
+      theme = stored;
+    }
   } catch (error) {}
+
+  root.classList.remove("light", "dark");
+  root.classList.add(theme);
+  root.style.colorScheme = theme;
 })();
 `;
 
@@ -32,7 +50,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={roboto.variable}
+      className={figtree.variable}
       suppressHydrationWarning
     >
       <head>

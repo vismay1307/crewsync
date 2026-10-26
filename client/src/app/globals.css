@@ -1,46 +1,92 @@
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
 
-:root,
-.dark {
-  color-scheme: dark;
-  --background: #05090b;
-  --foreground: #f5f8f9;
-  --surface: #0b1518;
-  --surface-raised: #101e22;
-  --surface-inset: #081113;
-  --surface-highlight: #16282c;
-  --card: #0d1a1d;
-  --border: #1e3238;
-  --border-strong: #2f4d54;
-  --muted: #8fa3a8;
-  --primary: #1b6e93;
-  --primary-foreground: #f5f8f9;
-  --secondary: #2fbfae;
-  --tertiary: #6fb8d9;
-  --destructive: #ff6f61;
-  --success: #73d99f;
-  --warning: #ffc857;
-}
+/* Dark utilities follow the .dark class on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* =========================================================
+   DESIGN TOKENS
+   ========================================================= */
+
+/* Light theme: warm cream, soft surfaces, blue accent. */
+:root,
 .light {
   color-scheme: light;
-  --background: #ffffff;
-  --foreground: #0a0f11;
-  --surface: #f5f8f9;
-  --surface-raised: #ecf2f3;
-  --surface-inset: #eef3f4;
-  --surface-highlight: #e2eced;
-  --card: #ffffff;
-  --border: #d8e2e4;
-  --border-strong: #b9c9cc;
-  --muted: #5c6c70;
-  --primary: #1b6e93;
-  --primary-foreground: #f5f8f9;
-  --secondary: #17a398;
-  --tertiary: #4fa8cc;
+
+  --background: #f5f1e8;
+  --foreground: #20242c;
+  --card: #fcfbf7;
+  --surface: #efeadd;
+  --surface-raised: #fcfbf7;
+  --surface-inset: #fffdf9;
+  --surface-highlight: #e8e2d3;
+
+  --border: #e3ded2;
+  --border-strong: #cdc6b4;
+  --muted: #646b78;
+
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --primary-soft: #e8effd;
+  --primary-soft-foreground: #1d4ed8;
+  --ring: #2563eb;
+
+  /* Legacy token names retained for existing pages. */
+  --secondary: #646b78;
+  --tertiary: #2563eb;
+
+  --destructive: #b91c1c;
+  --success: #166534;
+  --warning: #92400e;
+  --info: #1d4ed8;
+
+  --elevation-1:
+    0 1px 2px rgb(32 36 44 / 0.05),
+    0 1px 3px rgb(32 36 44 / 0.04);
+
+  --elevation-2:
+    0 8px 24px rgb(32 36 44 / 0.1),
+    0 1px 3px rgb(32 36 44 / 0.06);
 }
 
+/* Dark theme: charcoal surfaces and lighter blue accents. */
+.dark {
+  color-scheme: dark;
+
+  --background: #0d1117;
+  --foreground: #edf2f8;
+  --card: #131a23;
+  --surface: #0f151d;
+  --surface-raised: #192330;
+  --surface-inset: #0d1117;
+  --surface-highlight: #1b2635;
+
+  --border: #293544;
+  --border-strong: #3a4a5f;
+  --muted: #a2afbf;
+
+  --primary: #60a5fa;
+  --primary-foreground: #0d1117;
+  --primary-soft: #172c46;
+  --primary-soft-foreground: #93c5fd;
+  --ring: #60a5fa;
+
+  --secondary: #a2afbf;
+  --tertiary: #60a5fa;
+
+  --destructive: #f87171;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --info: #60a5fa;
+
+  --elevation-1: 0 1px 2px rgb(0 0 0 / 0.35);
+
+  --elevation-2:
+    0 12px 32px rgb(0 0 0 / 0.45),
+    0 1px 2px rgb(0 0 0 / 0.3);
+}
+
+/* Expose semantic tokens as Tailwind utilities. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -54,162 +100,262 @@
   --color-muted: var(--muted);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
+  --color-ring: var(--ring);
   --color-secondary: var(--secondary);
   --color-tertiary: var(--tertiary);
   --color-destructive: var(--destructive);
   --color-success: var(--success);
   --color-warning: var(--warning);
-  --font-sans: var(--font-roboto);
+  --color-info: var(--info);
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --shadow-card: var(--elevation-1);
+  --shadow-popover: var(--elevation-2);
 }
 
-* {
-  box-sizing: border-box;
+/* =========================================================
+   BASE STYLES
+   ========================================================= */
+
+@layer base {
+  html {
+    scrollbar-color: var(--border-strong) transparent;
+    scrollbar-width: thin;
+  }
+
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family:
+      var(--font-figtree),
+      ui-sans-serif,
+      system-ui,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--primary) 28%, transparent);
+    color: var(--foreground);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  margin: 0;
-  text-rendering: geometricPrecision;
-}
+/* =========================================================
+   SHARED COMPONENT STYLES
+   ========================================================= */
 
-::selection {
-  background: color-mix(in srgb, var(--primary) 32%, transparent);
-  color: var(--foreground);
-}
+@layer components {
+  .cs-page {
+    display: grid;
+    gap: 1.75rem;
+  }
 
-.cs-page {
-  display: grid;
-  gap: 1.5rem;
-}
+  .cs-page-header {
+    display: grid;
+    gap: 0.35rem;
+    max-width: 52rem;
+  }
 
-.cs-page-header {
-  display: grid;
-  gap: 0.35rem;
-  max-width: 52rem;
-}
+  .cs-page-title {
+    color: var(--foreground);
+    font-size: 1.625rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 2rem;
+  }
 
-.cs-page-title {
-  color: var(--foreground);
-  font-size: 1.75rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 2.15rem;
-}
+  .cs-page-description {
+    color: var(--muted);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+  }
 
-.cs-page-description {
-  color: var(--muted);
-  font-size: 0.875rem;
-  line-height: 1.55rem;
-}
+  .cs-section-title {
+    color: var(--foreground);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.5rem;
+  }
 
-.cs-section-title {
-  color: var(--foreground);
-  font-size: 1.0625rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 1.6rem;
-}
+  .cs-card,
+  .cs-form-card,
+  .cs-list {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+  }
 
-.cs-card {
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--surface-raised) 88%, var(--foreground) 2%), var(--card));
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-}
+  .cs-card,
+  .cs-form-card {
+    box-shadow: var(--elevation-1);
+  }
 
-.cs-form-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid color-mix(in srgb, var(--primary) 76%, transparent);
-  border-radius: 0.5rem;
-}
+  .cs-list {
+    overflow: hidden;
+  }
 
-.cs-list {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
+  .cs-row {
+    border-top: 1px solid var(--border);
+    transition: background-color 150ms ease;
+  }
 
-.cs-row {
-  border-top: 1px solid var(--border);
-}
+  .cs-row:first-child {
+    border-top: 0;
+  }
 
-.cs-row:first-child {
-  border-top: 0;
-}
+  .cs-row:hover {
+    background: color-mix(
+      in srgb,
+      var(--surface-highlight) 55%,
+      transparent
+    );
+  }
 
-.cs-row:hover {
-  background: color-mix(in srgb, var(--surface-highlight) 70%, transparent);
-}
+  .cs-empty {
+    background: var(--surface);
+    border: 1px dashed var(--border-strong);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
 
-.cs-empty {
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--surface-raised) 74%, transparent), var(--surface));
-  border: 1px dashed var(--border-strong);
-  border-radius: 0.5rem;
-  padding: 1.25rem;
-}
+  .cs-link-button {
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    color: var(--foreground);
+    display: inline-flex;
+    font-size: 0.875rem;
+    font-weight: 500;
+    gap: 0.5rem;
+    height: 2.25rem;
+    justify-content: center;
+    padding: 0 0.75rem;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease;
+  }
 
-.cs-empty::before {
-  background: var(--primary);
-  border-radius: 999px;
-  content: "";
-  display: block;
-  height: 0.35rem;
-  margin-bottom: 0.875rem;
-  width: 2.25rem;
-}
+  .cs-link-button:hover {
+    background: var(--surface-highlight);
+  }
 
-.cs-link-button {
-  align-items: center;
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-  color: var(--foreground);
-  display: inline-flex;
-  font-size: 0.875rem;
-  font-weight: 500;
-  gap: 0.5rem;
-  height: 2.25rem;
-  justify-content: center;
-  padding: 0 0.75rem;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
-}
+  .cs-meta-pill {
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+    display: inline-flex;
+    font-size: 0.75rem;
+    height: 1.65rem;
+    padding: 0 0.6rem;
+  }
 
-.cs-link-button:hover {
-  background: color-mix(in srgb, var(--secondary) 12%, var(--surface-highlight));
-  border-color: var(--border-strong);
-}
+  /* Shared input, select and textarea styling. */
+  .cs-control,
+  .cs-textarea {
+    background-color: var(--surface-inset);
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    color: var(--foreground);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    outline: none;
+    padding: 0 0.75rem;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease,
+      background-color 150ms ease;
+    width: 100%;
+  }
 
-.cs-textarea {
-  background: var(--surface-inset);
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-  color: var(--foreground);
-  font-size: 0.875rem;
-  line-height: 1.5rem;
-  outline: none;
-  padding: 0.625rem 0.75rem;
-  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
-  width: 100%;
-}
+  .cs-control {
+    height: 2.5rem;
+  }
 
-.cs-textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tertiary) 24%, transparent);
-}
+  .cs-textarea {
+    line-height: 1.5rem;
+    min-height: 6rem;
+    padding: 0.625rem 0.75rem;
+    resize: vertical;
+  }
 
-.cs-meta-pill {
-  align-items: center;
-  background: color-mix(in srgb, var(--secondary) 10%, var(--surface-highlight));
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--muted);
-  display: inline-flex;
-  font-size: 0.75rem;
-  height: 1.65rem;
-  padding: 0 0.6rem;
+  .cs-control::placeholder,
+  .cs-textarea::placeholder {
+    color: var(--muted);
+    opacity: 0.8;
+  }
+
+  .cs-control:hover:not(:disabled),
+  .cs-textarea:hover:not(:disabled) {
+    border-color: color-mix(
+      in srgb,
+      var(--foreground) 30%,
+      var(--border-strong)
+    );
+  }
+
+  .cs-control:focus,
+  .cs-textarea:focus {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--ring) 25%, transparent);
+  }
+
+  .cs-control[aria-invalid="true"],
+  .cs-textarea[aria-invalid="true"] {
+    border-color: var(--destructive);
+  }
+
+  .cs-control[aria-invalid="true"]:focus,
+  .cs-textarea[aria-invalid="true"]:focus {
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--destructive) 25%, transparent);
+  }
+
+  .cs-control:disabled,
+  .cs-textarea:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  select.cs-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23646b78' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem;
+    cursor: pointer;
+    padding-right: 2.25rem;
+  }
+
+  .dark select.cs-control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a2afbf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+
+  select.cs-control option {
+    background-color: var(--card);
+    color: var(--foreground);
+  }
 }

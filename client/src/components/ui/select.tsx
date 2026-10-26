@@ -1,24 +1,33 @@
 "use client";
 
-import type { SelectHTMLAttributes } from "react";
+import { useId, type ComponentProps } from "react";
 
-type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
+import { Field, getFieldIds } from "@/components/ui/field";
+import { cn } from "@/lib/api/cn";
+
+type SelectProps = ComponentProps<"select"> & {
   label?: string;
   error?: string;
+  hint?: string;
 };
 
 export function Select({
-  className = "",
+  className,
   error,
+  hint,
   id,
   label,
   ...props
 }: SelectProps) {
-  const selectId = id ?? props.name;
+  const generatedId = useId();
+  const selectId = id ?? props.name ?? generatedId;
+  const { describedBy } = getFieldIds(selectId, { error, hint });
+
   const control = (
     <select
-      aria-invalid={error ? "true" : "false"}
-      className={`h-10 w-full rounded-md border border-border bg-surface-inset px-3 text-sm text-foreground outline-none transition-all hover:border-border-strong focus:border-primary focus:ring-2 focus:ring-tertiary/25 disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+      aria-describedby={describedBy}
+      aria-invalid={error ? true : undefined}
+      className={cn("cs-control", className)}
       id={selectId}
       {...props}
     />
@@ -27,12 +36,8 @@ export function Select({
   if (!label) return control;
 
   return (
-    <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-foreground" htmlFor={selectId}>
-        {label}
-      </label>
+    <Field error={error} hint={hint} htmlFor={selectId} label={label}>
       {control}
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-    </div>
+    </Field>
   );
 }

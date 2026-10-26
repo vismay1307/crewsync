@@ -280,10 +280,10 @@ export const acceptWorkspaceInvitation = async (
       metadata: { email: invitation.email },
     });
 
-    return acceptedMember.populate(
-      "user",
-      "firstName lastName email avatar"
-    );
+    return await WorkspaceMember.findById(acceptedMember._id).populate(
+  "user",
+  "firstName lastName email avatar"
+);
   } finally {
     await session.endSession();
   }

@@ -87,7 +87,7 @@ export function SignupForm() {
 
   return (
     <AuthCard
-      subtitle="Create your account with the fields accepted by the CrewSync backend."
+      subtitle="Welcome To CrewSync"
       title="Create account"
     >
       <form className="space-y-4" onSubmit={handleSubmit}>

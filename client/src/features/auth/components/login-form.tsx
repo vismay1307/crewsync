@@ -59,7 +59,7 @@ export function LoginForm() {
 
   return (
     <AuthCard
-      subtitle="Use your CrewSync account credentials."
+      subtitle="Welcome To CrewSync"
       title="Log in"
     >
       <form className="space-y-4" onSubmit={handleSubmit}>

@@ -1,24 +1,33 @@
 "use client";
 
-import type { TextareaHTMLAttributes } from "react";
+import { useId, type ComponentProps } from "react";
 
-type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+import { Field, getFieldIds } from "@/components/ui/field";
+import { cn } from "@/lib/api/cn";
+
+type TextareaProps = ComponentProps<"textarea"> & {
   label?: string;
   error?: string;
+  hint?: string;
 };
 
 export function Textarea({
-  className = "",
+  className,
   error,
+  hint,
   id,
   label,
   ...props
 }: TextareaProps) {
-  const textareaId = id ?? props.name;
+  const generatedId = useId();
+  const textareaId = id ?? props.name ?? generatedId;
+  const { describedBy } = getFieldIds(textareaId, { error, hint });
+
   const control = (
     <textarea
-      aria-invalid={error ? "true" : "false"}
-      className={`cs-textarea disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+      aria-describedby={describedBy}
+      aria-invalid={error ? true : undefined}
+      className={cn("cs-textarea", className)}
       id={textareaId}
       {...props}
     />
@@ -27,12 +36,8 @@ export function Textarea({
   if (!label) return control;
 
   return (
-    <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-foreground" htmlFor={textareaId}>
-        {label}
-      </label>
+    <Field error={error} hint={hint} htmlFor={textareaId} label={label}>
       {control}
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-    </div>
+    </Field>
   );
 }

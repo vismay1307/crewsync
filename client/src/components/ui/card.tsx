@@ -1,5 +1,7 @@
 import type { HTMLAttributes } from "react";
 
+import { cn } from "@/lib/api/cn";
+
 type CardProps = HTMLAttributes<HTMLDivElement> & {
   variant?: "default" | "form" | "list" | "empty";
 };
@@ -12,30 +14,35 @@ const variantClasses: Record<NonNullable<CardProps["variant"]>, string> = {
 };
 
 export function Card({
-  className = "",
+  className,
   variant = "default",
   ...props
 }: CardProps) {
-  return <div className={`${variantClasses[variant]} ${className}`} {...props} />;
+  return <div className={cn(variantClasses[variant], className)} {...props} />;
 }
 
 export function CardHeader({
-  className = "",
+  className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={`border-b border-border px-5 py-4 ${className}`} {...props} />;
+  return (
+    <div
+      className={cn("border-b border-border px-5 py-4", className)}
+      {...props}
+    />
+  );
 }
 
 export function CardTitle({
-  className = "",
+  className,
   ...props
 }: HTMLAttributes<HTMLHeadingElement>) {
-  return <h2 className={`cs-section-title ${className}`} {...props} />;
+  return <h2 className={cn("cs-section-title", className)} {...props} />;
 }
 
 export function CardDescription({
-  className = "",
+  className,
   ...props
 }: HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={`mt-1 text-sm leading-6 text-muted ${className}`} {...props} />;
+  return <p className={cn("mt-1 text-sm leading-6 text-muted", className)} {...props} />;
 }

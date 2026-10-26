@@ -1,8 +1,13 @@
+
 import { Types } from "mongoose";
+
 import { Workspace } from "../models/workspace.model.js";
-import {UpdateWorkspaceInput, CreateWorkspaceInput } from "../validators/workspace.validator.js";
 import { WorkspaceMember } from "../models/workspace-member.model.js";
-import  ApiError  from "../utils/ApiError.js";
+import ApiError from "../utils/ApiError.js";
+import {
+  CreateWorkspaceInput,
+  UpdateWorkspaceInput,
+} from "../validators/workspace.validator.js";
 import { createActivity } from "./activity.service.js";
 
 export const createWorkspace = async (
@@ -17,41 +22,54 @@ export const createWorkspace = async (
 
   if (existingWorkspace) {
     throw new ApiError(409, "Workspace with this name already exists.");
-  } 
+  }
 
   const workspace = await Workspace.create({
-  name: data.name,
-  description: data.description,
-  visibility: data.visibility,
-  owner: ownerId,
-});
+    name: data.name,
+    description: data.description,
+    visibility: data.visibility,
+    owner: ownerId,
+  });
 
-await WorkspaceMember.create({
-  workspace: workspace._id,
-  user: ownerId,
-  role: "owner",
-  status: "accepted",
-  invitedBy: ownerId,
-});
+  await WorkspaceMember.create({
+    workspace: workspace._id,
+    user: ownerId,
+    role: "owner",
+    status: "accepted",
+    invitedBy: ownerId,
+  });
 
-await createActivity({
-  workspace: workspace._id,
-  actor: ownerId,
-  action: "workspace.created",
-  resourceType: "Workspace",
-  resourceId: workspace._id,
-  metadata: { name: workspace.name },
-});
+  await createActivity({
+    workspace: workspace._id,
+    actor: ownerId,
+    action: "workspace.created",
+    resourceType: "Workspace",
+    resourceId: workspace._id,
+    metadata: { name: workspace.name },
+  });
 
-return workspace;
+  return workspace;
 };
 
-export const getWorkspaces = async (
-  ownerId: Types.ObjectId
-) => {
-  const workspaces = await Workspace.find({
-    owner: ownerId,
+export const getWorkspaces = async (userId: Types.ObjectId) => {
+  // Find every active, accepted workspace membership for this user.
+  const memberships = await WorkspaceMember.find({
+    user: userId,
+    status: "accepted",
     isDeleted: false,
+  }).select("workspace");
+
+  const workspaceIds = memberships.map(
+    (membership) => membership.workspace
+  );
+
+  // Return workspaces owned by the user OR joined through an accepted membership.
+  const workspaces = await Workspace.find({
+    isDeleted: false,
+    $or: [
+      { owner: userId },
+      { _id: { $in: workspaceIds } },
+    ],
   }).sort({
     createdAt: -1,
   });
@@ -80,7 +98,6 @@ export const updateWorkspace = async (
   ownerId: Types.ObjectId,
   data: UpdateWorkspaceInput
 ) => {
-
   const workspace = await Workspace.findOne({
     _id: workspaceId,
     isDeleted: false,
@@ -91,12 +108,11 @@ export const updateWorkspace = async (
   }
 
   if (data.name && data.name !== workspace.name) {
-
-   const existingWorkspace = await Workspace.findOne({
-  owner: workspace.owner,
-  name: data.name,
-  isDeleted: false,
-});
+    const existingWorkspace = await Workspace.findOne({
+      owner: workspace.owner,
+      name: data.name,
+      isDeleted: false,
+    });
 
     if (existingWorkspace) {
       throw new ApiError(

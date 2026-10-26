@@ -1,33 +1,37 @@
 "use client";
 
-import type { InputHTMLAttributes } from "react";
+import { useId, type ComponentProps } from "react";
 
-type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+import { Field, getFieldIds } from "@/components/ui/field";
+import { cn } from "@/lib/api/cn";
+
+type InputProps = ComponentProps<"input"> & {
   label: string;
   error?: string;
+  hint?: string;
 };
 
 export function Input({
-  className = "",
+  className,
   error,
+  hint,
   id,
   label,
   ...props
 }: InputProps) {
-  const inputId = id ?? props.name;
+  const generatedId = useId();
+  const inputId = id ?? props.name ?? generatedId;
+  const { describedBy } = getFieldIds(inputId, { error, hint });
 
   return (
-    <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-foreground" htmlFor={inputId}>
-        {label}
-      </label>
+    <Field error={error} hint={hint} htmlFor={inputId} label={label}>
       <input
-        aria-invalid={error ? "true" : "false"}
-        className={`h-10 w-full rounded-md border border-border bg-surface-inset px-3 text-sm text-foreground outline-none transition-all placeholder:text-muted hover:border-border-strong focus:border-primary focus:ring-2 focus:ring-tertiary/25 disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+        aria-describedby={describedBy}
+        aria-invalid={error ? true : undefined}
+        className={cn("cs-control", className)}
         id={inputId}
         {...props}
       />
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-    </div>
+    </Field>
   );
 }

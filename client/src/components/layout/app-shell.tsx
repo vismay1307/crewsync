@@ -9,34 +9,42 @@ import {
   FiGrid,
   FiLogOut,
   FiMenu,
-  FiMoon,
   FiSend,
   FiSettings,
-  FiSun,
   FiTag,
 } from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useLogoutMutation } from "@/features/auth/hooks/use-auth-mutations";
-import { useTheme } from "@/providers/theme-provider";
 import { useWorkspacesQuery } from "@/features/workspaces/hooks/use-workspace-queries";
-import { setActiveWorkspaceId, setSidebarCollapsed } from "@/store/ui-slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  setActiveWorkspaceId,
+  setSidebarCollapsed,
+} from "@/store/ui-slice";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const sidebarCollapsed = useAppSelector((state) => state.ui.sidebarCollapsed);
-  const activeWorkspaceId = useAppSelector((state) => state.ui.activeWorkspaceId);
+
+  const sidebarCollapsed = useAppSelector(
+    (state) => state.ui.sidebarCollapsed,
+  );
+  const activeWorkspaceId = useAppSelector(
+    (state) => state.ui.activeWorkspaceId,
+  );
   const currentUser = useAppSelector((state) => state.auth.currentUser);
-  const { setTheme, theme } = useTheme();
+
   const logoutMutation = useLogoutMutation();
   const workspacesQuery = useWorkspacesQuery();
+
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: FiGrid },
     { href: "/workspaces", label: "Workspaces", icon: FiBriefcase },
+
     ...(activeWorkspaceId
       ? [
           {
@@ -66,11 +74,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           },
         ]
       : []),
+
     { href: "/notifications", label: "Notifications", icon: FiBell },
   ];
 
   function handleWorkspaceChange(workspaceId: string) {
     dispatch(setActiveWorkspaceId(workspaceId || null));
+
     if (workspaceId) {
       router.push(`/workspaces/${workspaceId}`);
     }
@@ -85,29 +95,39 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       >
         <div className="flex h-16 items-center justify-between border-b border-border px-4">
           {!sidebarCollapsed ? (
-            <Link className="flex items-center gap-3 text-sm font-bold tracking-normal" href="/dashboard">
+            <Link
+              className="flex items-center gap-3 text-sm font-bold tracking-normal"
+              href="/dashboard"
+            >
               <span className="grid h-8 w-8 place-items-center rounded-md border border-primary/30 bg-primary/12 text-primary">
                 C
               </span>
               <span className="text-base">CrewSync</span>
             </Link>
           ) : null}
-          <button
+
+          <Button
             aria-label="Toggle sidebar"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-surface-highlight hover:text-foreground"
-            onClick={() => dispatch(setSidebarCollapsed(!sidebarCollapsed))}
-            type="button"
+            onClick={() =>
+              dispatch(setSidebarCollapsed(!sidebarCollapsed))
+            }
+            size="icon"
+            variant="ghost"
           >
             <FiMenu size={17} />
-          </button>
+          </Button>
         </div>
+
         <nav className="space-y-1.5 p-3">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const active =
+              pathname === item.href ||
+              pathname.startsWith(`${item.href}/`);
 
             return (
               <Link
+                aria-current={active ? "page" : undefined}
                 className={`relative flex h-10 items-center gap-3 rounded-md px-3 text-sm transition-all ${
                   active
                     ? "bg-primary/12 text-foreground shadow-[inset_3px_0_0_var(--primary)]"
@@ -115,8 +135,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 }`}
                 href={item.href}
                 key={item.href}
+                title={sidebarCollapsed ? item.label : undefined}
               >
-                <Icon className={active ? "text-primary" : ""} size={16} />
+                <Icon
+                  className={active ? "text-primary" : ""}
+                  size={16}
+                />
                 {!sidebarCollapsed ? <span>{item.label}</span> : null}
               </Link>
             );
@@ -126,16 +150,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className={sidebarCollapsed ? "md:pl-16" : "md:pl-64"}>
         <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-background/90 px-5 backdrop-blur sm:px-8">
-          <div className="flex items-center gap-3">
-            <Link className="text-sm font-bold md:hidden" href="/dashboard">
+          <div className="flex min-w-0 items-center gap-3">
+            <Link
+              className="text-sm font-bold md:hidden"
+              href="/dashboard"
+            >
               CrewSync
             </Link>
+
             <Select
+              aria-label="Select workspace"
               className="max-w-56"
-              onChange={(event) => handleWorkspaceChange(event.target.value)}
+              onChange={(event) =>
+                handleWorkspaceChange(event.target.value)
+              }
               value={activeWorkspaceId ?? ""}
             >
               <option value="">Select workspace</option>
+
               {workspacesQuery.data?.map((workspace) => (
                 <option key={workspace._id} value={workspace._id}>
                   {workspace.name}
@@ -143,18 +175,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               ))}
             </Select>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <span className="hidden text-sm text-muted sm:inline">
               {currentUser?.firstName} {currentUser?.lastName}
             </span>
-            <Button
-              aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-              className="h-9 w-9 px-0"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              variant="ghost"
-            >
-              {theme === "dark" ? <FiSun size={16} /> : <FiMoon size={16} />}
-            </Button>
+
+            <ThemeToggle />
+
             <Button
               aria-label="Logout"
               disabled={logoutMutation.isPending}
@@ -166,13 +194,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Button>
           </div>
         </header>
-        <div className="px-5 py-6 sm:px-8">{children}</div>
+
+        <main className="px-5 py-6 sm:px-8">{children}</main>
       </div>
     </div>
   );
 }
 
-export function WorkspaceSettingsLink({ workspaceId }: { workspaceId: string }) {
+export function WorkspaceSettingsLink({
+  workspaceId,
+}: {
+  workspaceId: string;
+}) {
   return (
     <Link
       className="cs-link-button"

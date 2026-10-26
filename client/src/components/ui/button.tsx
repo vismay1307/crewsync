@@ -1,33 +1,63 @@
 "use client";
 
-import type { ButtonHTMLAttributes } from "react";
+import type { ComponentProps } from "react";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "ghost" | "danger";
+import { cn } from "../../lib/api/cn";
+
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+type ButtonSize = "sm" | "md" | "icon";
+
+type ButtonProps = ComponentProps<"button"> & {
+  loading?: boolean;
+  size?: ButtonSize;
+  variant?: ButtonVariant;
 };
 
-const variantClasses: Record<NonNullable<ButtonProps["variant"]>, string> = {
+const baseClasses =
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50";
+
+const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "border-primary/70 bg-primary text-primary-foreground shadow-[0_0_0_1px_color-mix(in_srgb,var(--primary)_18%,transparent)] hover:border-primary hover:bg-primary/90 disabled:hover:bg-primary",
+    "border-transparent bg-primary text-primary-foreground enabled:hover:bg-primary/90 enabled:active:bg-primary/80",
   secondary:
-    "border-border bg-secondary/12 text-foreground hover:border-border-strong hover:bg-secondary/18 disabled:hover:bg-secondary/12",
+    "border-border-strong bg-card text-foreground enabled:hover:bg-surface-highlight",
   ghost:
-    "border-transparent bg-transparent text-muted hover:bg-tertiary/12 hover:text-foreground disabled:hover:bg-transparent",
+    "border-transparent bg-transparent text-muted enabled:hover:bg-surface-highlight enabled:hover:text-foreground",
   danger:
-    "border-destructive/50 bg-destructive/12 text-destructive hover:bg-destructive/18 disabled:hover:bg-destructive/12",
+    "border-destructive/30 bg-destructive/10 text-destructive enabled:hover:bg-destructive/15",
+};
+
+const sizeClasses: Record<ButtonSize, string> = {
+  sm: "h-9 px-3",
+  md: "h-10 px-4",
+  icon: "h-9 w-9 p-0",
 };
 
 export function Button({
-  className = "",
-  variant = "primary",
+  children,
+  className,
+  disabled,
+  loading = false,
+  size = "md",
   type = "button",
+  variant = "primary",
   ...props
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex h-10 items-center justify-center gap-2 rounded-md border px-4 text-sm font-medium tracking-normal outline-none transition-all focus-visible:ring-2 focus-visible:ring-tertiary/35 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-55 ${variantClasses[variant]} ${className}`}
+      aria-busy={loading || undefined}
+      className={cn(baseClasses, variantClasses[variant], sizeClasses[size], className)}
+      disabled={disabled || loading}
       type={type}
       {...props}
-    />
+    >
+      {loading ? (
+        <span
+          aria-hidden="true"
+          className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+        />
+      ) : null}
+      {children}
+    </button>
   );
 }
