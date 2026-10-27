@@ -1,13 +1,14 @@
-
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/ui/error-alert";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ApiError } from "@/lib/api/client";
+import { cn } from "@/lib/api/cn";
 import {
   useCreateWorkspaceMutation,
   useUpdateWorkspaceMutation,
@@ -16,9 +17,13 @@ import type { Workspace } from "@/types/entities";
 
 export function WorkspaceForm({
   mode,
+  onCancel,
+  onSuccess,
   workspace,
 }: {
   mode: "create" | "update";
+  onCancel?: () => void;
+  onSuccess?: () => void;
   workspace?: Workspace;
 }) {
   const [name, setName] = useState(workspace?.name ?? "");
@@ -72,13 +77,18 @@ export function WorkspaceForm({
           setName("");
           setDescription("");
           setVisibility("public");
+          onSuccess?.();
         },
       });
 
       return;
     }
 
-    updateMutation.mutate(data);
+    updateMutation.mutate(data, {
+      onSuccess: () => {
+        onSuccess?.();
+      },
+    });
   }
 
   const apiError =
@@ -87,9 +97,10 @@ export function WorkspaceForm({
       : mutation.error?.message;
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-5" onSubmit={handleSubmit}>
       <Input
         error={nameError}
+        hint={nameError ? undefined : "3 to 100 characters."}
         label="Workspace name"
         name="workspaceName"
         onChange={(event) => setName(event.target.value)}
@@ -98,6 +109,7 @@ export function WorkspaceForm({
 
       <Textarea
         className="min-h-24"
+        hint="Optional. Up to 500 characters."
         label="Description"
         maxLength={500}
         name="workspaceDescription"
@@ -109,9 +121,7 @@ export function WorkspaceForm({
         label="Visibility"
         name="workspaceVisibility"
         onChange={(event) =>
-          setVisibility(
-            event.target.value as "private" | "public",
-          )
+          setVisibility(event.target.value as "private" | "public")
         }
         value={visibility}
       >
@@ -119,19 +129,38 @@ export function WorkspaceForm({
         <option value="public">Public</option>
       </Select>
 
-      {apiError ? (
-        <p className="text-sm text-destructive">{apiError}</p>
-      ) : null}
+      {apiError ? <ErrorAlert>{apiError}</ErrorAlert> : null}
 
-      <Button disabled={!canSubmit} type="submit">
-        {mutation.isPending
-          ? mode === "create"
-            ? "Creating"
-            : "Saving"
-          : mode === "create"
-            ? "Create workspace"
-            : "Save changes"}
-      </Button>
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-3 pt-1",
+          onCancel ? "justify-end" : "justify-start",
+        )}
+      >
+        {onCancel ? (
+          <Button
+            disabled={mutation.isPending}
+            onClick={onCancel}
+            variant="secondary"
+          >
+            Cancel
+          </Button>
+        ) : null}
+
+        <Button
+          disabled={!canSubmit}
+          loading={mutation.isPending}
+          type="submit"
+        >
+          {mutation.isPending
+            ? mode === "create"
+              ? "Creating"
+              : "Saving"
+            : mode === "create"
+              ? "Create workspace"
+              : "Save changes"}
+        </Button>
+      </div>
     </form>
   );
 }
