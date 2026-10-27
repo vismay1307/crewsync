@@ -6,110 +6,129 @@
 
 /* =========================================================
    DESIGN TOKENS
+   CrewSync — Ivory & Slate Blue
    ========================================================= */
 
-/* Light theme: warm cream, soft surfaces, blue accent. */
+/* Light theme */
 :root,
 .light {
   color-scheme: light;
 
-  --background: #f5f1e8;
-  --foreground: #20242c;
-  --card: #fcfbf7;
-  --surface: #efeadd;
-  --surface-raised: #fcfbf7;
-  --surface-inset: #fffdf9;
-  --surface-highlight: #e8e2d3;
+  --background: #F7F4ED;
+  --foreground: #252B35;
 
-  --border: #e3ded2;
-  --border-strong: #cdc6b4;
-  --muted: #646b78;
+  --card: #FCFAF5;
+  --surface: #EAE5DA;
+  --surface-raised: #FCFAF5;
+  --surface-inset: #F7F4ED;
+  --surface-highlight: #E2DCCE;
 
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --primary-soft: #e8effd;
-  --primary-soft-foreground: #1d4ed8;
-  --ring: #2563eb;
+  --border: #DDD7CA;
+  --border-strong: #BDB6A8;
+  --muted: #626B79;
+
+  --primary: #496EA9;
+  --primary-foreground: #FFFFFF;
+  --primary-soft: #D8E2F2;
+  --primary-soft-foreground: #314F82;
+  --ring: #5277B8;
 
   /* Legacy token names retained for existing pages. */
-  --secondary: #646b78;
-  --tertiary: #2563eb;
+  --secondary: #626B79;
+  --tertiary: #5277B8;
 
-  --destructive: #b91c1c;
+  /* Semantic colors */
+  --destructive: #B42318;
   --success: #166534;
-  --warning: #92400e;
-  --info: #1d4ed8;
+  --warning: #92400E;
+  --info: #314F82;
 
+  /* Shadows */
   --elevation-1:
-    0 1px 2px rgb(32 36 44 / 0.05),
-    0 1px 3px rgb(32 36 44 / 0.04);
+    0 1px 2px rgb(37 43 53 / 0.04),
+    0 2px 6px rgb(37 43 53 / 0.04);
 
   --elevation-2:
-    0 8px 24px rgb(32 36 44 / 0.1),
-    0 1px 3px rgb(32 36 44 / 0.06);
+    0 8px 24px rgb(37 43 53 / 0.08),
+    0 2px 4px rgb(37 43 53 / 0.04);
 }
 
-/* Dark theme: charcoal surfaces and lighter blue accents. */
+/* Dark theme */
 .dark {
   color-scheme: dark;
 
-  --background: #0d1117;
-  --foreground: #edf2f8;
-  --card: #131a23;
-  --surface: #0f151d;
-  --surface-raised: #192330;
-  --surface-inset: #0d1117;
-  --surface-highlight: #1b2635;
+  --background: #11161E;
+  --foreground: #E9EDF4;
 
-  --border: #293544;
-  --border-strong: #3a4a5f;
-  --muted: #a2afbf;
+  --card: #191F29;
+  --surface: #141A23;
+  --surface-raised: #202936;
+  --surface-inset: #0E131A;
+  --surface-highlight: #252F3D;
 
-  --primary: #60a5fa;
-  --primary-foreground: #0d1117;
-  --primary-soft: #172c46;
-  --primary-soft-foreground: #93c5fd;
-  --ring: #60a5fa;
+  --border: #303A49;
+  --border-strong: #48566A;
+  --muted: #A9B3C2;
 
-  --secondary: #a2afbf;
-  --tertiary: #60a5fa;
+  --primary: #91AADA;
+  --primary-foreground: #17202E;
+  --primary-soft: #26364D;
+  --primary-soft-foreground: #D8E2F2;
+  --ring: #91AADA;
 
-  --destructive: #f87171;
-  --success: #4ade80;
-  --warning: #fbbf24;
-  --info: #60a5fa;
+  --secondary: #A9B3C2;
+  --tertiary: #91AADA;
 
-  --elevation-1: 0 1px 2px rgb(0 0 0 / 0.35);
+  /* Semantic colors */
+  --destructive: #FDA29B;
+  --success: #86EFAC;
+  --warning: #FCD34D;
+  --info: #A4BCE6;
+
+  /* Shadows */
+  --elevation-1:
+    0 1px 2px rgb(0 0 0 / 0.28);
 
   --elevation-2:
-    0 12px 32px rgb(0 0 0 / 0.45),
-    0 1px 2px rgb(0 0 0 / 0.3);
+    0 12px 32px rgb(0 0 0 / 0.32),
+    0 2px 4px rgb(0 0 0 / 0.2);
 }
 
-/* Expose semantic tokens as Tailwind utilities. */
+/* =========================================================
+   TAILWIND THEME MAPPING
+   ========================================================= */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-surface-inset: var(--surface-inset);
   --color-surface-highlight: var(--surface-highlight);
+
   --color-card: var(--card);
+
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-muted: var(--muted);
+
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-soft: var(--primary-soft);
   --color-primary-soft-foreground: var(--primary-soft-foreground);
+
   --color-ring: var(--ring);
   --color-secondary: var(--secondary);
   --color-tertiary: var(--tertiary);
+
   --color-destructive: var(--destructive);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-info: var(--info);
+
   --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
   --shadow-card: var(--elevation-1);
   --shadow-popover: var(--elevation-2);
 }
@@ -128,11 +147,13 @@
     margin: 0;
     background: var(--background);
     color: var(--foreground);
+
     font-family:
       var(--font-figtree),
       ui-sans-serif,
       system-ui,
       sans-serif;
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -144,7 +165,11 @@
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--primary) 28%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--primary) 28%,
+      transparent
+    );
     color: var(--foreground);
   }
 
@@ -164,6 +189,8 @@
    ========================================================= */
 
 @layer components {
+  /* Page layout */
+
   .cs-page {
     display: grid;
     gap: 1.75rem;
@@ -196,6 +223,8 @@
     letter-spacing: -0.01em;
     line-height: 1.5rem;
   }
+
+  /* Cards and lists */
 
   .cs-card,
   .cs-form-card,
@@ -231,6 +260,8 @@
     );
   }
 
+  /* Empty states */
+
   .cs-empty {
     background: var(--surface);
     border: 1px dashed var(--border-strong);
@@ -238,19 +269,24 @@
     padding: 1.5rem;
   }
 
+  /* Link-style actions */
+
   .cs-link-button {
     align-items: center;
     background: var(--card);
     border: 1px solid var(--border-strong);
     border-radius: 0.5rem;
     color: var(--foreground);
+
     display: inline-flex;
     font-size: 0.875rem;
     font-weight: 500;
     gap: 0.5rem;
+
     height: 2.25rem;
     justify-content: center;
     padding: 0 0.75rem;
+
     transition:
       background-color 150ms ease,
       border-color 150ms ease;
@@ -260,34 +296,47 @@
     background: var(--surface-highlight);
   }
 
+  .cs-link-button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Metadata badges */
+
   .cs-meta-pill {
     align-items: center;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 999px;
     color: var(--muted);
+
     display: inline-flex;
     font-size: 0.75rem;
     height: 1.65rem;
     padding: 0 0.6rem;
   }
 
-  /* Shared input, select and textarea styling. */
+  /* Inputs, selects and textareas */
+
   .cs-control,
   .cs-textarea {
+    width: 100%;
+
     background-color: var(--surface-inset);
     border: 1px solid var(--border-strong);
     border-radius: 0.5rem;
     color: var(--foreground);
+
     font-size: 0.875rem;
     line-height: 1.25rem;
     outline: none;
+
     padding: 0 0.75rem;
+
     transition:
       border-color 150ms ease,
       box-shadow 150ms ease,
       background-color 150ms ease;
-    width: 100%;
   }
 
   .cs-control {
@@ -295,8 +344,8 @@
   }
 
   .cs-textarea {
-    line-height: 1.5rem;
     min-height: 6rem;
+    line-height: 1.5rem;
     padding: 0.625rem 0.75rem;
     resize: vertical;
   }
@@ -320,8 +369,14 @@
   .cs-textarea:focus {
     border-color: var(--ring);
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--ring) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--ring) 25%,
+        transparent
+      );
   }
+
+  /* Validation error states */
 
   .cs-control[aria-invalid="true"],
   .cs-textarea[aria-invalid="true"] {
@@ -331,8 +386,14 @@
   .cs-control[aria-invalid="true"]:focus,
   .cs-textarea[aria-invalid="true"]:focus {
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--destructive) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--destructive) 25%,
+        transparent
+      );
   }
+
+  /* Disabled states */
 
   .cs-control:disabled,
   .cs-textarea:disabled {
@@ -340,22 +401,69 @@
     opacity: 0.6;
   }
 
+  /* Custom select arrow */
+
   select.cs-control {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23646b78' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23626B79' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
     background-position: right 0.75rem center;
     background-repeat: no-repeat;
     background-size: 1rem;
+
     cursor: pointer;
     padding-right: 2.25rem;
   }
 
   .dark select.cs-control {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a2afbf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A9B3C2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   }
 
   select.cs-control option {
     background-color: var(--card);
     color: var(--foreground);
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile navigation drawer                                           */
+/* ------------------------------------------------------------------ */
+
+@layer components {
+  .cs-drawer {
+    background: transparent;
+    border: 0;
+    color: var(--foreground);
+    height: 100dvh;
+    inset: 0 auto 0 0;
+    margin: 0;
+    max-height: none;
+    max-width: none;
+    padding: 0;
+    width: min(20rem, 85vw);
+  }
+
+  .cs-drawer[open] {
+    animation: cs-drawer-in 200ms ease-out;
+  }
+
+  .cs-drawer::backdrop {
+    background: rgb(0 0 0 / 0.45);
+  }
+}
+
+@keyframes cs-drawer-in {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Prevent the page behind the drawer from scrolling. */
+body:has(.cs-drawer[open]) {
+  overflow: hidden;
 }
