@@ -25,7 +25,7 @@ import {
   setActiveWorkspaceId,
   setSidebarCollapsed,
 } from "@/store/ui-slice";
-
+import { useWorkspaceSelectionSync } from "@/features/workspaces/hooks/use-workspace-selection-sync";
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -43,7 +43,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const logoutMutation = useLogoutMutation();
   const workspacesQuery = useWorkspacesQuery();
-
+useWorkspaceSelectionSync({
+  pathname,
+  activeWorkspaceId,
+  workspaces: workspacesQuery.data,
+  workspacesLoaded: workspacesQuery.isSuccess,
+  workspacesFetching: workspacesQuery.isFetching,
+});
   const [mobileNavPath, setMobileNavPath] = useState<string | null>(null);
 
   const mobileNavOpen =

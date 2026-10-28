@@ -100,7 +100,7 @@ export function WorkspaceDetail({
 
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <h1 className="cs-page-title break-words">
+              <h1 className="cs-page-title wrap-break-word">
                 {workspace.name}
               </h1>
 
