@@ -1,9 +1,9 @@
-
 "use client";
 
 import { type FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/ui/error-alert";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -11,14 +11,19 @@ import {
   useUpdateProjectMutation,
 } from "@/features/projects/hooks/use-project-queries";
 import { ApiError } from "@/lib/api/client";
+import { cn } from "@/lib/api/cn";
 import type { Project } from "@/types/entities";
 
 export function ProjectForm({
   mode,
+  onCancel,
+  onSuccess,
   project,
   workspaceId,
 }: {
   mode: "create" | "update";
+  onCancel?: () => void;
+  onSuccess?: () => void;
   project?: Project;
   workspaceId: string;
 }) {
@@ -67,13 +72,18 @@ export function ProjectForm({
           setName("");
           setDescription("");
           setEmoji("");
+          onSuccess?.();
         },
       });
 
       return;
     }
 
-    updateMutation.mutate(data);
+    updateMutation.mutate(data, {
+      onSuccess: () => {
+        onSuccess?.();
+      },
+    });
   }
 
   const apiError =
@@ -82,24 +92,29 @@ export function ProjectForm({
       : mutation.error?.message;
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
-      <Input
-        error={nameError}
-        label="Project name"
-        name="projectName"
-        onChange={(event) => setName(event.target.value)}
-        value={name}
-      />
+    <form className="space-y-5" onSubmit={handleSubmit}>
+      <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_7rem] sm:gap-4">
+        <Input
+          error={nameError}
+          hint={nameError ? undefined : "3 to 100 characters."}
+          label="Project name"
+          name="projectName"
+          onChange={(event) => setName(event.target.value)}
+          value={name}
+        />
 
-      <Input
-        label="Emoji"
-        name="emoji"
-        onChange={(event) => setEmoji(event.target.value)}
-        value={emoji}
-      />
+        <Input
+          hint="Optional."
+          label="Emoji"
+          name="emoji"
+          onChange={(event) => setEmoji(event.target.value)}
+          value={emoji}
+        />
+      </div>
 
       <Textarea
         className="min-h-24"
+        hint="Optional. Up to 500 characters."
         label="Description"
         maxLength={500}
         name="projectDescription"
@@ -107,19 +122,38 @@ export function ProjectForm({
         value={description}
       />
 
-      {apiError ? (
-        <p className="text-sm text-destructive">{apiError}</p>
-      ) : null}
+      {apiError ? <ErrorAlert>{apiError}</ErrorAlert> : null}
 
-      <Button disabled={!canSubmit} type="submit">
-        {mutation.isPending
-          ? mode === "create"
-            ? "Creating"
-            : "Saving"
-          : mode === "create"
-            ? "Create project"
-            : "Save project"}
-      </Button>
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-3 pt-1",
+          onCancel ? "justify-end" : "justify-start",
+        )}
+      >
+        {onCancel ? (
+          <Button
+            disabled={mutation.isPending}
+            onClick={onCancel}
+            variant="secondary"
+          >
+            Cancel
+          </Button>
+        ) : null}
+
+        <Button
+          disabled={!canSubmit}
+          loading={mutation.isPending}
+          type="submit"
+        >
+          {mutation.isPending
+            ? mode === "create"
+              ? "Creating"
+              : "Saving"
+            : mode === "create"
+              ? "Create project"
+              : "Save project"}
+        </Button>
+      </div>
     </form>
   );
 }
