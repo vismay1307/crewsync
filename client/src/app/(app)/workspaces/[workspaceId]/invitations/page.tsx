@@ -1,26 +1,46 @@
-import { InvitationForm } from "@/features/invitations/components/invitation-form";
+"use client";
+
+import { use, useState } from "react";
+import { FiPlus } from "react-icons/fi";
+
+import { Button } from "@/components/ui/button";
+import { InviteByEmailDialog } from "@/features/invitations/components/invitation-invite-dialog";
 import { InvitationList } from "@/features/invitations/components/invitation-list";
 
-export default async function WorkspaceInvitationsPage({
+export default function WorkspaceInvitationsPage({
   params,
 }: {
   params: Promise<{ workspaceId: string }>;
 }) {
-  const { workspaceId } = await params;
+  const { workspaceId } = use(params);
+  const [inviteOpen, setInviteOpen] = useState(false);
 
   return (
-    <main className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-      <section className="space-y-5">
+    <div className="cs-page">
+      <header className="flex flex-wrap items-start justify-between gap-4">
         <div className="cs-page-header">
           <h1 className="cs-page-title">Invitations</h1>
-          <p className="cs-page-description">Manage pending and historical workspace invites.</p>
+          <p className="cs-page-description">
+            Track the invitations you have sent. Pending ones can be resent or
+            cancelled until they are accepted.
+          </p>
         </div>
-        <InvitationList workspaceId={workspaceId} />
-      </section>
-      <aside className="cs-form-card p-5">
-        <h2 className="mb-4 cs-section-title">Invite member</h2>
-        <InvitationForm workspaceId={workspaceId} />
-      </aside>
-    </main>
+        <Button onClick={() => setInviteOpen(true)}>
+          <FiPlus aria-hidden="true" size={16} />
+          Invite member
+        </Button>
+      </header>
+
+      <InvitationList
+        onInvite={() => setInviteOpen(true)}
+        workspaceId={workspaceId}
+      />
+
+      <InviteByEmailDialog
+        onClose={() => setInviteOpen(false)}
+        open={inviteOpen}
+        workspaceId={workspaceId}
+      />
+    </div>
   );
 }

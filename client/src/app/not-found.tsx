@@ -1,12 +1,24 @@
 import Link from "next/link";
 
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+
 export default function NotFound() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-4">
-      <section className="cs-card p-6">
-        <h1 className="cs-page-title">Page not found</h1>
-        <p className="mt-2 text-sm text-muted">The requested CrewSync page does not exist.</p>
-        <Link className="cs-link-button mt-4" href="/dashboard">
+    <main className="relative flex min-h-screen items-center justify-center bg-background px-4 py-16">
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
+
+      <section className="w-full max-w-md text-center">
+        <p className="text-sm font-semibold text-primary">404</p>
+        <h1 className="cs-page-title mt-2">Page not found</h1>
+        <p className="mt-3 text-sm leading-6 text-muted">
+          The page you are looking for does not exist or may have been moved.
+        </p>
+        <Link
+          className="mt-6 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          href="/dashboard"
+        >
           Back to dashboard
         </Link>
       </section>

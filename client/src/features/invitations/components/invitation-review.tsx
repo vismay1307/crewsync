@@ -1,11 +1,13 @@
-
 "use client";
 
-import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useLogoutMutation } from "@/features/auth/hooks/use-auth-mutations";
+import { useEffect } from "react";
+
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useLogoutMutation } from "@/features/auth/hooks/use-auth-mutations";
+import { AuthAlert, AuthCard } from "@/features/auth/components/auth-card";
 import {
   useAcceptInvitationMutation,
   useInvitationPreviewQuery,
@@ -21,6 +23,18 @@ function workspaceName(workspace: string | Workspace) {
 function invitedByName(user: string | User) {
   if (typeof user === "string") return "A workspace admin";
   return `${user.firstName} ${user.lastName}`;
+}
+
+function LoadingLines() {
+  return (
+    <div aria-busy="true" className="space-y-3">
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-2/3" />
+      <span className="sr-only" role="status">
+        Loading
+      </span>
+    </div>
+  );
 }
 
 export function InvitationReview({ token }: { token: string }) {
@@ -53,100 +67,132 @@ export function InvitationReview({ token }: { token: string }) {
     invitedEmail === currentEmail;
 
   if (authStatus === "idle" || authStatus === "loading") {
-    return <p className="text-sm text-muted">Checking your account...</p>;
+    return (
+      <AuthCard subtitle="Checking your account." title="Workspace invitation">
+        <LoadingLines />
+      </AuthCard>
+    );
   }
 
   if (authStatus === "unauthenticated") {
-    return <p className="text-sm text-muted">Redirecting to sign up...</p>;
+    return (
+      <AuthCard
+        subtitle="Redirecting you to sign up so you can accept it."
+        title="Workspace invitation"
+      >
+        <LoadingLines />
+      </AuthCard>
+    );
+  }
+
+  if (rejectMutation.isSuccess) {
+    return (
+      <AuthCard
+        subtitle={
+          previewQuery.data
+            ? `You declined the invitation to ${workspaceName(previewQuery.data.workspace)}.`
+            : "You declined this invitation."
+        }
+        title="Invitation declined"
+      >
+        <Link
+          className="cs-link-button h-10 w-full"
+          href="/dashboard"
+        >
+          Go to dashboard
+        </Link>
+      </AuthCard>
+    );
   }
 
   if (previewQuery.isPending) {
-    return <p className="text-sm text-muted">Loading invitation...</p>;
+    return (
+      <AuthCard subtitle="Loading the invitation details." title="Workspace invitation">
+        <LoadingLines />
+      </AuthCard>
+    );
   }
 
   if (previewQuery.isError) {
     return (
-      <p className="text-sm text-destructive">
-        {previewQuery.error.message}
-      </p>
+      <AuthCard
+        subtitle="This invitation could not be opened."
+        title="Invitation unavailable"
+      >
+        <div className="space-y-4">
+          <AuthAlert>{previewQuery.error.message}</AuthAlert>
+          <Link className="cs-link-button h-10 w-full" href="/dashboard">
+            Go to dashboard
+          </Link>
+        </div>
+      </AuthCard>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-4 py-8">
-      <Card className="p-6">
-        <h1 className="cs-page-title">
-          {workspaceName(previewQuery.data.workspace)}
-        </h1>
-
-        <p className="mt-2 text-sm text-muted">
-          {invitedByName(previewQuery.data.invitedBy)} invited{" "}
-          {previewQuery.data.email} as {previewQuery.data.role}.
-        </p>
-
+    <AuthCard
+      subtitle={`${invitedByName(previewQuery.data.invitedBy)} invited ${previewQuery.data.email} as ${previewQuery.data.role}.`}
+      title={`Join ${workspaceName(previewQuery.data.workspace)}`}
+    >
+      <div className="space-y-4">
         {emailMatches ? (
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3">
             <Button
               disabled={
                 acceptMutation.isPending || rejectMutation.isPending
               }
+              loading={acceptMutation.isPending}
               onClick={() =>
                 acceptMutation.mutate(undefined, {
                   onSuccess: () => router.push("/workspaces"),
                 })
               }
             >
-              {acceptMutation.isPending ? "Accepting..." : "Accept"}
+              {acceptMutation.isPending ? "Accepting" : "Accept invitation"}
             </Button>
 
             <Button
               disabled={
                 acceptMutation.isPending || rejectMutation.isPending
               }
+              loading={rejectMutation.isPending}
               onClick={() => rejectMutation.mutate()}
               variant="secondary"
             >
-              {rejectMutation.isPending ? "Rejecting..." : "Reject"}
+              {rejectMutation.isPending ? "Rejecting" : "Reject"}
             </Button>
           </div>
         ) : (
-          
-<div className="mt-5 space-y-3">
-  <p className="text-sm text-destructive">
-    This invitation was sent to {previewQuery.data.email}.
-    You are logged in with a different email address.
-  </p>
+          <div className="space-y-4">
+            <AuthAlert>
+              This invitation was sent to {previewQuery.data.email}. You are
+              logged in with a different email address.
+            </AuthAlert>
 
-  <Button
-    disabled={logoutMutation.isPending}
-    onClick={() => logoutMutation.mutate()}
-  >
-    {logoutMutation.isPending
-      ? "Switching account..."
-      : "Switch account"}
-  </Button>
+            <Button
+              disabled={logoutMutation.isPending}
+              loading={logoutMutation.isPending}
+              onClick={() => logoutMutation.mutate()}
+            >
+              {logoutMutation.isPending
+                ? "Switching account"
+                : "Switch account"}
+            </Button>
 
-  {logoutMutation.error ? (
-    <p className="text-sm text-destructive">
-      {logoutMutation.error.message}
-    </p>
-  ) : null}
-</div>
-
+            {logoutMutation.error ? (
+              <AuthAlert>{logoutMutation.error.message}</AuthAlert>
+            ) : null}
+          </div>
         )}
 
         {acceptMutation.error ? (
-          <p className="mt-3 text-sm text-destructive">
-            {acceptMutation.error.message}
-          </p>
+          <AuthAlert>{acceptMutation.error.message}</AuthAlert>
         ) : null}
 
         {rejectMutation.error ? (
-          <p className="mt-3 text-sm text-destructive">
-            {rejectMutation.error.message}
-          </p>
+          <AuthAlert>{rejectMutation.error.message}</AuthAlert>
         ) : null}
-      </Card>
-    </main>
+      </div>
+    </AuthCard>
   );
 }

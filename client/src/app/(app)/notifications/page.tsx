@@ -2,12 +2,14 @@ import { NotificationList } from "@/features/notifications/components/notificati
 
 export default function NotificationsPage() {
   return (
-    <main className="cs-page">
-      <div className="cs-page-header">
+    <div className="cs-page">
+      <header className="cs-page-header">
         <h1 className="cs-page-title">Notifications</h1>
-        <p className="cs-page-description">Recent updates assigned to your account.</p>
-      </div>
+        <p className="cs-page-description">
+          Updates from your workspaces that involve you.
+        </p>
+      </header>
       <NotificationList />
-    </main>
+    </div>
   );
 }
