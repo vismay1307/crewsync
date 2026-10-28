@@ -1,17 +1,25 @@
-
 "use client";
 
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/ui/error-alert";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { ApiError } from "@/lib/api/client";
 import { useCreateInvitationMutation } from "@/features/invitations/hooks/use-invitation-queries";
+import { ApiError } from "@/lib/api/client";
+import { cn } from "@/lib/api/cn";
 import type { WorkspaceRole } from "@/types/entities";
 
 type InviteRole = Exclude<WorkspaceRole, "owner">;
 
-export function MemberForm({ workspaceId }: { workspaceId: string }) {
+export function MemberForm({
+  onCancel,
+  workspaceId,
+}: {
+  onCancel?: () => void;
+  workspaceId: string;
+}) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<InviteRole>("member");
   const [successMessage, setSuccessMessage] = useState("");
@@ -58,7 +66,7 @@ export function MemberForm({ workspaceId }: { workspaceId: string }) {
       : invitationMutation.error?.message;
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-5" onSubmit={handleSubmit}>
       <Input
         error={emailError}
         label="User email"
@@ -78,17 +86,40 @@ export function MemberForm({ workspaceId }: { workspaceId: string }) {
         <option value="admin">Admin</option>
       </Select>
 
-      {apiError ? (
-        <p className="text-sm text-destructive">{apiError}</p>
-      ) : null}
+      {apiError ? <ErrorAlert>{apiError}</ErrorAlert> : null}
 
       {successMessage ? (
-        <p className="text-sm text-green-700">{successMessage}</p>
+        <p
+          className="rounded-lg border border-success/30 bg-success/10 px-4 py-3 text-sm leading-5 text-success"
+          role="status"
+        >
+          {successMessage}
+        </p>
       ) : null}
 
-      <Button disabled={!canSubmit} type="submit">
-        {invitationMutation.isPending ? "Sending invitation..." : "Send invitation"}
-      </Button>
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-3 pt-1",
+          onCancel ? "justify-end" : "justify-start",
+        )}
+      >
+        {onCancel ? (
+          <Button
+            disabled={invitationMutation.isPending}
+            onClick={onCancel}
+            variant="secondary"
+          >
+            {successMessage ? "Done" : "Cancel"}
+          </Button>
+        ) : null}
+        <Button
+          disabled={!canSubmit}
+          loading={invitationMutation.isPending}
+          type="submit"
+        >
+          {invitationMutation.isPending ? "Sending invitation" : "Send invitation"}
+        </Button>
+      </div>
     </form>
   );
 }

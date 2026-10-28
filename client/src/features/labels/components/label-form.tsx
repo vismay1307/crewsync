@@ -1,11 +1,17 @@
 "use client";
 
-import { FormEvent, useState, useSyncExternalStore } from "react";
+import { type FormEvent, useState, useSyncExternalStore } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/ui/error-alert";
+import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { LabelChip } from "@/features/labels/components/label-parts";
 import { useCreateLabelMutation } from "@/features/labels/hooks/use-label-queries";
 import { ApiError } from "@/lib/api/client";
+import { cn } from "@/lib/api/cn";
+
+const HEX_COLOR = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
 function themeColor(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -33,7 +39,15 @@ function subscribePrimaryColor(listener: () => void) {
   return () => observer.disconnect();
 }
 
-export function LabelForm({ workspaceId }: { workspaceId: string }) {
+export function LabelForm({
+  onCancel,
+  onSuccess,
+  workspaceId,
+}: {
+  onCancel?: () => void;
+  onSuccess?: () => void;
+  workspaceId: string;
+}) {
   const [name, setName] = useState("");
   const primaryColor = useSyncExternalStore(
     subscribePrimaryColor,
@@ -44,11 +58,14 @@ export function LabelForm({ workspaceId }: { workspaceId: string }) {
   const color = customColor ?? primaryColor;
   const [description, setDescription] = useState("");
   const createMutation = useCreateLabelMutation(workspaceId);
+  const colorValid = HEX_COLOR.test(color);
+  const colorError =
+    color && !colorValid ? "Enter a hex color such as #496EA9." : undefined;
   const canSubmit =
     name.trim().length > 0 &&
     name.trim().length <= 50 &&
     description.trim().length <= 250 &&
-    /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(color) &&
+    colorValid &&
     !createMutation.isPending;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -66,6 +83,7 @@ export function LabelForm({ workspaceId }: { workspaceId: string }) {
           setName("");
           setCustomColor(null);
           setDescription("");
+          onSuccess?.();
         },
       }
     );
@@ -77,21 +95,20 @@ export function LabelForm({ workspaceId }: { workspaceId: string }) {
       : createMutation.error?.message;
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-5" onSubmit={handleSubmit}>
       <Input
+        hint="Up to 50 characters."
         label="Label name"
         maxLength={50}
         name="name"
         onChange={(event) => setName(event.target.value)}
         value={name}
       />
-      <div className="space-y-1.5">
-        <label className="block text-sm font-medium" htmlFor="labelColor">
-          Color
-        </label>
+
+      <Field error={colorError} htmlFor="labelColor" label="Color">
         <div className="flex gap-3">
           <input
-            className="h-10 w-14 rounded-md border border-border bg-surface-inset p-1"
+            className="h-10 w-14 shrink-0 cursor-pointer rounded-lg border border-border-strong bg-surface-inset p-1 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={!color}
             id="labelColor"
             onChange={(event) => setCustomColor(event.target.value)}
@@ -99,26 +116,59 @@ export function LabelForm({ workspaceId }: { workspaceId: string }) {
             value={color}
           />
           <input
+            aria-describedby={colorError ? "labelColor-error" : undefined}
+            aria-invalid={colorError ? true : undefined}
             aria-label="Color hex value"
-            className="h-10 w-full rounded-md border border-border bg-surface-inset px-3 text-sm text-foreground outline-none transition-all hover:border-border-strong focus:border-primary focus:ring-2 focus:ring-primary/20"
+            className="cs-control font-mono"
             maxLength={7}
             name="color"
             onChange={(event) => setCustomColor(event.target.value)}
             value={color}
           />
         </div>
-      </div>
+      </Field>
+
       <Input
+        hint="Optional. Up to 250 characters."
         label="Description"
         maxLength={250}
         name="description"
         onChange={(event) => setDescription(event.target.value)}
         value={description}
       />
-      {apiError ? <p className="text-sm text-destructive">{apiError}</p> : null}
-      <Button disabled={!canSubmit} type="submit">
-        {createMutation.isPending ? "Creating" : "Create label"}
-      </Button>
+
+      {name.trim() && colorValid ? (
+        <div className="flex items-center gap-3 text-sm text-muted">
+          <span>Preview</span>
+          <LabelChip color={color} name={name.trim()} />
+        </div>
+      ) : null}
+
+      {apiError ? <ErrorAlert>{apiError}</ErrorAlert> : null}
+
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-3 pt-1",
+          onCancel ? "justify-end" : "justify-start",
+        )}
+      >
+        {onCancel ? (
+          <Button
+            disabled={createMutation.isPending}
+            onClick={onCancel}
+            variant="secondary"
+          >
+            Cancel
+          </Button>
+        ) : null}
+        <Button
+          disabled={!canSubmit}
+          loading={createMutation.isPending}
+          type="submit"
+        >
+          {createMutation.isPending ? "Creating" : "Create label"}
+        </Button>
+      </div>
     </form>
   );
 }
